@@ -1,0 +1,798 @@
+commands:
+
+*> gcloud --> The main Google Cloud toolkit, which is used for many tasks on the platform, such as resource management and user authentication.
+
+1> gcloud auth list --> auth list—which lists the credentialed accounts in your Google Cloud project
+
+2> gcloud config list project --> lists the project ids.
+
+3> on ssh terminal:
+	a> sudo su -  --> for getting root access 
+	b> apt-get update   --> get update for your os
+	c> apt-get install nginx -y   --> installing NGINX.(high performance load balancer and web server)
+	d> ps auwx | grep nginx   --> confirm that nginx is running.
+
+4> creating new instances with gcloud:
+	a> gcloud compute instances create gcelab2 --machine-type n1-standard-2 --zone us-central1-c   --> to create a new virtual machine instance from the cmd.
+	b> gcloud compute instances create --help   --> To see all the defaults for the instances.
+	c> You can also use SSH to connect to your instance via gcloud. Make sure to add your zone, or omit the --zone flag if you've set the option globally:
+	gcloud compute ssh gcelab2 --zone us-central1-c  
+
+5> RDP into the windows server:
+	a> gcloud compute instances get-serial-port-output instance-1    --> To see weather the server instance is redy for and RDP connection.
+	b> gcloud compute reset-windows-password [instance] --zone us-central1-a --user [username]  --> setting password for logging into RDP.
+	c> download the rdp and run on you system
+
+6> Getting started with google cloud shell and gcloud:
+	a> gcloud compute project-info describe --project [project_id]   --> know the default region and zone of the project 
+	b> export PROJECT_ID=[your project id]   --> setting the environment variables
+	c> export ZONE=<your_zone>
+	d> gcloud compute instances create gcelab2 --machine-type n1-standard-2 --zone $ZONE    --> creating vm instance from console
+	e> gcloud compute instances create --help   --> To open help for the create command, run the following command
+	f> gcloud -h   --> The gcloud tool offers simple usage guidelines that are available by adding the -h flag (for help) onto the end of any gcloud command.
+	g> gcloud config --help  ||  gcloud help config  --> You can access more verbose help by appending the --help flag onto a command or running the gcloud help command.  Note: Press ENTER or the spacebar to scroll through the help content. To exit the content, type Q.
+	i> gcloud config list   --> View the list of configurations in your environment:
+	j> gcloud config list --all    --> To see all properties and their settings:
+	k> gcloud components list    --> List your components
+--------- installing a new component --------------------------------------------- (installing auto complete mode)----------------------
+	l> sudo apt-get install google-cloud-sdk     --> installing beta components
+	m> gcloud beta interactive      --> enabling google cloud interractive mode.
+	n> exit   --> to exit the interactive mode.
+--------- connecting to your vm instance with ssh---------------------------------(firstly you can easily click on ssh under vm to connect directly you vm with ssh, else using gcloud console provides  a wrapper around SSH, which takes care of authentication and the mapping of instance names to IP addresses.)
+	o> gcloud compute ssh gcelab2 --zone $ZONE   --> to connect your vm with ssh via gcloud console.
+--------- using the home directory-------------------------------------------------(The contents of your Cloud Shell Home directory persist across projects between all Cloud Shell sessions, even after the virtual machine is terminated and restarted.)-------------------------------------------------------
+	p> cd $HOME   --> change your current working directory to home.
+	q> vi ./.bashrc    --> vi text editor opens the .bashrc files.
+	r> To exit the editor, press ESC, :wq, and then press Enter.
+
+7> Kubernetes Qwik start:
+--------- setting default compute zone------------
+	a> gcloud config set compute/zone us-central1-a  
+--------- creating a GKE cluster------------------
+	b> gcloud container clusters create [CLUSTER-NAME]   --> creates a gcloud cluster
+	c> gcloud container clusters get-credentials [CLUSTER-NAME]   --> gets authentication credentials for the cluster
+--------- deploying an application to the cluster --------------------------
+	d> kubectl create deployment hello-server --image=gcr.io/google-samples/hello-app:1.0   --> creates a new Deployment hello-server from the hello-app container image,  (This Kubernetes command creates a Deployment object that represents hello-server. In this case, --image specifies a container image to deploy. The command pulls the example image from a Container Registry bucket. gcr.io/google-samples/hello-app:1.0 indicates the specific image version to pull. If a version is not specified, the latest version is used.)
+	e> kubectl expose deployment hello-server --type=LoadBalancer --port 8080   --> create a Kubernetes Service, which is a Kubernetes resource that lets you expose your application to external traffic(--port specifies the port that the container exposes. type="LoadBalancer" creates a Compute Engine load balancer for your container.)
+	f> kubectl get service   ||  http://[EXTERNAL-IP]:8080--> inspect the hello-server Service
+	g> gcloud container clusters delete [CLUSTER-NAME]   --> deleting the cluster.	
+8> Back Set Up Network and HTTP Load Balancers:
+	a> gcloud compute instances create www1 \
+  --image-family debian-9 \
+  --image-project debian-cloud \
+  --zone us-central1-a \
+  --tags network-lb-tag \
+  --metadata startup-script="#! /bin/bash
+    sudo apt-get update
+    sudo apt-get install apache2 -y
+    sudo service apache2 restart
+    echo '<!doctype html><html><body><h1>www1</h1></body></html>' | tee /var/www/html/index.html"      ==> creating instances
+	b> gcloud compute firewall-rules create www-firewall-network-lb \
+    --target-tags network-lb-tag --allow tcp:80      --> creating firewall traffic to the vm instances.
+	c> gcloud compute instances list   --> getting the details of the instances created along with their external and internal ip's.
+	d> curl http://[IP_ADDRESS]     --> sending request to check the vm's working.
+-------- configure the load balancing service -------------------------------------
+	e> gcloud compute addresses create network-lb-ip-1 \
+ --region us-central1                        --> creating a static external ip address for the load balancer.
+	f> gcloud compute http-health-checks create basic-check           --> adding http health check resource
+	g> gcloud compute target-pools create www-pool \
+    --region us-central1 --http-health-check basic-check             --> Add a target pool in the same region as your instances. Run the following to create the target pool and use the health check, which is required for the service to function
+	h> gcloud compute target-pools add-instances www-pool \
+    --instances www1,www2,www3                                       --> adding instances to the pool
+	i> gcloud compute forwarding-rules create www-rule \
+    --region us-central1 \
+    --ports 80 \
+    --address network-lb-ip-1 \
+    --target-pool www-pool                                            --> adding a forward rule 
+	j> gcloud compute forwarding-rules describe www-rule --region us-central1            --> views the external ip address of the pool
+	i> while true; do curl -m1 IP_ADDRESS; done                    --> sending the requests using tcp protocol.(use ctrl+c for exit).
+
+--------- creating an http load balancer ----------------------------------------
+	j> gcloud compute instance-templates create lb-backend-template \
+   --region=us-central1 \
+   --network=default \
+   --subnet=default \
+   --tags=allow-health-check \
+   --image-family=debian-9 \
+   --image-project=debian-cloud \
+   --metadata=startup-script='#! /bin/bash
+     apt-get update
+     apt-get install apache2 -y
+     a2ensite default-ssl
+     a2enmod ssl
+     vm_hostname="$(curl -H "Metadata-Flavor:Google" \
+     http://169.254.169.254/computeMetadata/v1/instance/name)"
+     x1                                            -->creating a load balancer template
+	k> gcloud compute instance-groups managed create lb-backend-group \
+   --template=lb-backend-template --size=2 --zone=us-central1-a            --> creating a managed instance grp based on the template
+	l> gcloud compute firewall-rules create fw-allow-health-check \
+    --network=default \
+
+    --action=allow \
+    --direction=ingress \
+    --source-ranges=130.211.0.0/22,35.191.0.0/16 \
+    --target-tags=allow-health-check \
+    --rules=tcp:80                                                         --> allows traffic from google cloud health checking systems.
+	m> gcloud compute addresses create lb-ipv4-1 \
+    --ip-version=IPV4 \
+    --global                                                               --> setting an global external ip address 
+	n> gcloud compute addresses describe lb-ipv4-1 \
+    --format="get(address)" \
+    --global                                                               --> to check the external ip address alloted.
+	o>     gcloud compute health-checks create http http-basic-check \
+        --port 80  							   --> creating health checker for the laod balancer.
+	p>     gcloud compute backend-services create web-backend-service \
+        --protocol=HTTP \
+        --port-name=http \
+        --health-checks=http-basic-check \
+        --global        						  --> creating a backend service
+	q>     gcloud compute backend-services add-backend web-backend-service \
+        --instance-group=lb-backend-group \
+        --instance-group-zone=us-central1-a \
+        --global                                                           --> adding the instance grp as backend to the backend service
+	r>     gcloud compute url-maps create web-map-http \
+        --default-service web-backend-service                              --> creating an URL map to route the incoming requests to the default backend service
+	s>     gcloud compute target-http-proxies create http-lb-proxy \
+        --url-map web-map-http                                             --> Creating a target HTTP proxy to route requests to your URL map
+	t>     gcloud compute forwarding-rules create http-content-rule \
+        --address=lb-ipv4-1\
+        --global \
+        --target-http-proxy=http-lb-proxy \
+        --ports=80							    --> creating a global forwarding rule to route the incoming request to the proxy
+9> Cloud Storage: Qwik Start - CLI/SDK:
+	a> gsutil mb gs://YOUR BUCKET NAME/                      --> creates a bucket from the google cloud shell
+	b> wget --output-document ada.jpg https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ada_Lovelace_portrait.jpg/800px-Ada_Lovelace_portrait.jpg                --> creates an instance named ada.jpg in shell and downloads the image into it
+	c> gsutil cp ada.jpg gs://YOUR BUCKET NAME               --> copies the instance to the bucket 
+	d> rm ada.jpg                                            --> delets the instance ada.jpg
+	e> gsutil cp -r gs://YOUR BUCKET NAME/ada.jpg            --> downloads the image from the bucket to the shell
+	f> gsutil cp gs://YOUR BUCKET NAME/ada.jpg gs://YOUR BUCKET NAME/image-folder/     --> copies image from the bucket to a folder in the same bucket 
+	g> gsutil ls gs://YOUR BUCKET NAME or gsutil ls gs://YOUR BUCKET/image-folder      --> lists all the instances in the respective folders
+	h> gsutil acl ch -u AllUsers:R gs://YOUR BUCKET NAME/ada.jpg                       --> gives reding access to all user for the particular resource
+	i> gsutil acl ch -d AllUsers gs://YOUR BUCKET NAME/ada.jpg                         --> removes reding access from all the users for the particular resource
+	j> gsutil rm gs://YOUR BUCKET NAME/ada.jpg                                         --> removes selected resources from the bucket 
+
+10>    Cloud Monitoring: Qwik Start:
+	a> curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh
+sudo bash add-monitoring-agent-repo.sh                                 --> Run the Monitoring agent install script command in the SSH terminal of your VM instance to install the Cloud Monitoring agent.
+	b> sudo apt-get update
+	c> sudo apt-get install stackdriver-agent
+	d> curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh
+sudo bash add-logging-agent-repo.sh                                    --> Run the Logging agent install script command in the SSH terminal of your VM instance to install the Cloud Logging agent
+	e> sudo apt-get update
+	f> sudo apt-get install google-fluentd
+
+11>   Cloud Functions: Qwik Start - (shell)
+	a> mkdir gcf_hello_world        --> makes a directory in gcloud shell
+	b> cd gcf_hello_world
+	c> nano index.js  and pasting the following code in index.js <     /**
+* Background Cloud Function to be triggered by Pub/Sub.
+* This function is exported by index.js, and executed when
+* the trigger topic receives a message.
+*
+* @param {object} data The event payload.
+* @param {object} context The event metadata.
+*/
+exports.helloWorld = (data, context) => {
+const pubSubMessage = data;
+const name = pubSubMessage.data
+    ? Buffer.from(pubSubMessage.data, 'base64').toString() : "Hello World";
+
+console.log(`My Cloud Function: ${name}`);
+};         >                                                                --> this creates a function
+	d> gsutil mb -p [PROJECT_ID] gs://[BUCKET_NAME]                     --> creating a storage bucket
+	e> gcloud functions deploy helloWorld \
+  --stage-bucket [BUCKET_NAME] \
+  --trigger-topic hello_world \
+  --runtime nodejs8                                                          --> Deploy the function to a pub/sub topic named hello_world,
+	f> gcloud functions describe helloWorld                              --> verifying the status of the function
+	g> DATA=$(printf 'Hello World!'|base64) && gcloud functions call helloWorld --data '{"data":"'$DATA'"}'         --> Testing the function
+	i> gcloud functions logs read helloWorld                             --> the logs to chcek the output
+
+12> 	Google Cloud Pub/Sub: Qwik Start - Command Line:
+	a> gcloud pubsub topics create myTopic                               --> creates a topic named myTopic
+	b> gcloud pubsub topics list                        		     --> lists out all the topics created
+	c> gcloud pubsub topics delete myTopic	        		     --> deletes the topic myTopic
+	d> gcloud pubsub subscriptions create --topic myTopic mySubscription --> creates a subscription to the topic myTopic with the name mySubscription
+	e> gcloud pubsub topics list-subscriptions myTopic                   --> lists out all the subscription to the topic myTopic
+	f> gcloud pubsub subscriptions delete mySubscription                 --> delete a subscription named mySubscription
+	g> gcloud pubsub topics publish myTopic --message "a"                --> publishes a message to the topic myTopic
+	h> gcloud pubsub subscriptions pull mySubscription --auto-ack        --> pulls message one by one from the topic as no flag is added, here auto-ack is also a flag which gives and output in the form of boxes. once you get all the pulls, next pull request will give an error, showing 0 messages in log !
+	i> gcloud pubsub subscriptions pull mySubscription --auto-ack --limit=3  --> this pulls all the 3 messages at once due to the flag used limit=3
+
+13> Multiple vpc network:
+-------- Create the privatenet network and its subnet:
+	a> gcloud compute networks create privatenet --subnet-mode=custom     --> creating a VPC(virtual private cloud) named privatenet
+	b> gcloud compute networks subnets create privatesubnet-us --network=privatenet --region=us-central1 --range=172.16.0.0/24    --> creaing a subnet in network privatenet, in region us-central1
+	c> gcloud compute networks subnets create privatesubnet-eu --network=privatenet --region=europe-west4 --range=172.20.0.0/20   --> similarly creating a sub network inside vpc(privatenet), in region europe-west4
+	d> gcloud compute networks list					      --> lists all the VPC's present in the project.
+	e> gcloud compute networks subnets list --sort-by=NETWORK             --> lists all the subnets available in th project, sorted by network
+-------- creating firewall rule for network or vpc: 
+	f> gcloud compute firewall-rules create privatenet-allow-icmp-ssh-rdp --direction=INGRESS --priority=1000 --network=privatenet --action=ALLOW --rules=icmp,tcp:22,tcp:3389 --source-ranges=0.0.0.0/0
+	g> gcloud compute firewall-rules list --sort-by=NETWORK		      --> lists all the firewall rules sorted by network
+-------- making a vm in privatenet-us using the Cloud Shell command line.
+	h> gcloud compute instances create privatenet-us-vm --zone=us-central1-c --machine-type=n1-standard-1 --subnet=privatesubnet-us      --> create the privatenet-us-vm instance:
+	i> gcloud compute instances list --sort-by=ZONE                       --> lists all the vm instances present in the project sorted by zone 
+-------- Explore the connectivity between VM instances:
+	j> ping -c 3 <Enter mynet-eu-vm's external IP here> 		      --> open (ssh terminal ) for one vm in one vpc and ping to the external ip of other vm in some other vpc (it works!); 
+	when you ping the internal ip address of a vm in same zone, it will work! but for other vm in other vpc it wont work
+-------- Create a VM instance with multiple network interfaces:
+	i> in (Management, security, disks, networking, sole tenancy.) > (Networking.) For Network interfaces, click the pencil icon to edit. and make it for all the vpc, now you can log into its ssh and use the internal ips of other vms to ping them as we have changed the networking of our vm!
+	j> IN SSH OF A VM:
+		1> sudo ifconfig                    --> o list the network interfaces within the VM instance:
+		2> ping -c 3 privatenet-us-vm	    --> You are able to ping privatenet-us-vm (from a newly created vm, on any other zone which has multiple network interface) by its name because VPC networks have an internal DNS service that allows you to address instances by their DNS names rather than their internal IP addresses. When an internal DNS query is made with the instance hostname, it resolves to the primary interface (nic0) of the instance. Therefore, this only works for privatenet-us-vm in this case.
+		2> ip route			    --> To list the routes for vm-appliance instance
+
+14> introduction to docker:
+	a> docker run hello-world                   --> The docker daemon searched for the hello-world image, didn't find the image locally, pulled the image from a public registry called Docker Hub, created a container from that image, and ran the container for you. 
+	b> docker images			    -->  to take a look at the container image, which the docker daemon pulled from Docker Hub.
+	c> docker ps				    --> to take a look at currently running containers.
+	d> docker ps -a 			    --> to take a look at detailed info about the log of running containers.
+-------- -- building a docker image ----------------------
+	e> mkdir test && cd test		    --> making a folder where we can do our testing and learning 
+	f> cat > Dockerfile <<EOF
+# Use an official Node runtime as the parent image
+FROM node:6
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+ADD . /app
+
+# Make the container's port 80 available to the outside world
+EXPOSE 80
+
+# Run app.js using node when the container launches
+CMD ["node", "app.js"]
+EOF						     --> making a file named docker, which is read by docker daemon while building an image 
+	g> cat > app.js <<EOF
+const http = require('http');
+
+const hostname = '0.0.0.0';
+const port = 80;
+
+const server = http.createServer((req, res) => {
+    res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+        res.end('Hello World\n');
+});
+
+server.listen(port, hostname, () => {
+    console.log('Server running at http://%s:%s/', hostname, port);
+});
+
+process.on('SIGINT', function() {
+    console.log('Caught interrupt signal and will exit');
+    process.exit();
+});
+EOF							--> this code is of a simple server which returns hello world under the file app.js
+	g> docker build -t node-app:0.1 . 		--> this builds an image with name node-app and tag 0.1 to help in identification of images created
+	h> docker images				--> lists all the images built.
+-------- -- running the images ------------------------
+	i> docker run -p 4000:80 --name my-app node-app:0.1	-->this code to run containers based on the image you built;  The --name flag allows you to name the container if you like. The -p instructs Docker to map the host's port 4000 to the container's port 80. Now you can reach the server at http://localhost:4000. Without port mapping, you would not be able to reach the container at localhost.	
+	j> curl http://localhost:4000			--> to test the server
+	h> docker stop my-app && docker rm my-app       --> stops the my-app running and delets the my-app container 
+	i> docker run -p 4000:80 --name my-app -d node-app:0.1   -->  to start the container in the backgroun
+	j> docker build -t node-app:0.2 .		--> this builds a new image with name node-app and tag 0.2 for identification purpose, this is done after altering the app.js file 
+	k> docker run -p 8080:80 --name my-app-2 -d node-app:0.2   --> this runs a container,Notice how we map the host's port 8080 instead of 80. We can't use host port 4000 because it's already in use.
+--------- -- debugging ---------------------------------
+	l> docker logs -f [container_id]         	--> (2-3 letters can be used to reffer to the container id's)You can look at the logs of a container using docker logs [container_id]. If you want to follow the log's output as the container is running, use the -f option.
+	m> docker exec -it [container_id] bash          --> Sometimes you will want to start an interactive Bash session inside the running container. You can use docker exec to do this. Open another terminal (in Cloud Shell, click the + icon) and enter the following command. (inside the container you will find both the files DockerFile and the app.js).
+	n> exit  					--> to come out of the interactive Bash session use the exit command
+	o> docker inspect [container_id]		--> examine a container's metadata in Docker by using Docker inspect
+	p> docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' [container_id]		--> Use --format to inspect specific fields from the returned JSON.
+--------- -- publishing -------------------------------- ( pushing your image to the Google Container Registry (gcr))
+	q> gcloud config list project
+	r> docker tag node-app:0.2 gcr.io/[project-id]/node-app:0.2		--> Tag node-app:0.2. Replace [project-id] with your configuration.
+	s> docker push gcr.io/[project-id]/node-app:0.2				--> pushing the image to gcr
+	t> docker stop $(docker ps -q) 
+docker rm $(docker ps -aq)				--> stop and remove all the containers.
+	u> docker rmi node-app:0.2 gcr.io/[project-id]/node-app node-app:0.1
+docker rmi node:6
+docker rmi $(docker images -aq) # remove remaining images
+docker images						-->  remove the child images (of node:6) before you remove the node image. Replace [project-id].
+	v> docker pull gcr.io/[project-id]/node-app:0.2
+docker run -p 4000:80 -d gcr.io/[project-id]/node-app:0.2
+curl http://localhost:4000				-->  Pull the image and run it.
+ 
+15> Orchestrating the Cloud with Kubernetes:
+	a> gcloud config set compute/zone us-central1-b	--> set the compute zone
+	b> gcloud container clusters create io		--> starts a cluster named io
+-------- -- (Get the sample code)---------
+	c> gsutil cp -r gs://spls/gsp021/* .		--> cloning the github repo
+	d> cd orchestrate-with-kubernetes/kubernetes	--> changing the directory
+	e> kubectl create deployment nginx --image=nginx:1.10.0			--> creates deployment
+	f> kubectl get pods				--> views all the running containers inside their pods
+	G> kubectl expose deployment nginx --port 80 --type LoadBalancer	--> exposing outside the container
+	h> kubectl get services				--> gives details about the deployed instances 
+	i> cat pods/monolith.yaml			--> shows the configuration file for the monolith pod creation 
+	j> kubectl create -f pods/monolith.yaml		--> to create a pod named monolith
+	k> kubectl get pods 				--> list all pods running in the default namespace:
+	l> kubectl describe pods monolith		--> gives the details about the pod named monolith
+	m> kubectl port-forward monolith 10080:80	--> from different terminal use this command; used for setting up port forwarding rule
+	n> curl http://127.0.0.1:10080			--> from terminal 1 making requests to the pod . 
+	o> curl http://127.0.0.1:10080/secure		--> hit a secure endpoint on the pod.
+	p> curl -u user http://127.0.0.1:10080/login	--> Try logging in to get an auth token back from the monolith: At the login prompt, use the super-secret password "password" to login. Logging in caused a JWT token to print out. Since Cloud Shell does not handle copying long strings well, create an environment variable for the token.
+	q> TOKEN=$(curl http://127.0.0.1:10080/login -u user|jq -r '.token')	--> inter the super secret password " password "
+	r> curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:10080/secure	--> hitting secure endpoint of the pod
+	s> kubectl logs -f monolith			--> on 3rd terminal, use the -f flag to get a stream of the logs happening in real-time 
+	t> kubectl exec monolith --stdin --tty -c monolith /bin/sh		--> to run an interactive shell inside the Monolith Pod.
+-------- -- (Creating a service + creating a secure monolith pod) ---------------
+	u> cd ~/orchestrate-with-kubernetes/kubernetes
+	v> cat pods/secure-monolith.yaml		-->  monolith service configuration file
+	w> kubectl create secret generic tls-certs --from-file tls/
+kubectl create configmap nginx-proxy-conf --from-file nginx/proxy.conf
+kubectl create -f pods/secure-monolith.yaml		--> create a secure pod
+	x> cat services/monolith.yaml			--> we have to expose the secure-monolith Pod externally> this file is monolith service configuration file
+	y> kubectl create -f services/monolith.yaml	--> creates monolith service from monolith service configuration file.  to expose the nodeport here because this is how you'll forward external traffic from port 31000 to nginx (on port 443)
+	z> gcloud compute firewall-rules create allow-monolith-nodeport \
+  --allow=tcp:31000					-->  allow traffic to the monolith service on the exposed nodeport
+	aa> gcloud compute instances list		--> gives details about all the instances
+	ab> curl -k https://<EXTERNAL_IP>:31000		--> try hitting monolith service using curl (k flag is used to skip certificate validation)
+	ac> kubectl get pods -l "app=monolith"		--> shows all the running pods with specified tag
+	ad> kubectl get pods -l "app=monolith,secure=enabled"			--> shows pod with both the tags 
+	ae> kubectl label pods secure-monolith 'secure=enabled'
+kubectl get pods secure-monolith --show-labels		--> label the monolith pod with label "security=enabled"
+	af> kubectl describe services monolith | grep Endpoints			--> shows the list of endpoints of the monolith service from correctly labeled pods
+	ag> gcloud compute instances list
+curl -k https://<EXTERNAL_IP>:31000			
+-------- -- deploying applications using kubernetes -----------------------------
+	ah> cat deployments/auth.yaml			--> auth deployment configuration file
+	ai> kubectl create -f deployments/auth.yaml	--> creates a deployment object
+	aj> kubectl create -f services/auth.yaml	--> creates auth service
+	ak> kubectl create -f deployments/hello.yaml
+kubectl create -f services/hello.yaml			--> create and expose hello deployment
+	al> kubectl create configmap nginx-frontend-conf --from-file=nginx/frontend.conf
+kubectl create -f deployments/frontend.yaml
+kubectl create -f services/frontend.yaml		--> creating and exposing frontend deployment
+	am> kubectl get services frontend		--> grab ip for frontedn
+	an> curl -k https://<EXTERNAL-IP>		
+
+16> Managing Deployments Using Kubernetes Engine: 
+	a> gcloud config set compute/zone us-central1-a	--> set zone
+	b> gsutil -m cp -r gs://spls/gsp053/orchestrate-with-kubernetes .
+cd orchestrate-with-kubernetes/kubernetes		--> getting sample code 
+	c> gcloud container clusters create bootcamp --num-nodes 5 --scopes "https://www.googleapis.com/auth/projecthosting,storage-rw"		--> Create a cluster with five n1-standard-1 nodes
+	d> kubectl explain deployment			--> explaines about deployment
+	e> kubectl explain deployment --recursive	--> shows all the fields available in deployment 
+	f> kubectl explain deployment.metadata.name	--> explains the field deployment.metadata.name clearly
+-------- -- Creating a deployment -------------------------------------------------
+	g> vi deployments/auth.yaml			--> opens the file deployments/auth.yaml in vi editor
+	h> i 						--> starts editting option for the opened file
+	i> press esc and type ":wq" to exit the editor
+	j> kubectl create -f deployments/auth.yaml	-->  it will make one pod that conforms to the data in the Deployment manifest.
+	k> kubectl get deployments			--> see the deployments done
+	l> kubectl get replicasets			--> depicts all the replica sets (replica set is defined in auth.yaml file)
+ 	m> kubectl get pods				--> to view all the pods created
+	n> kubectl create -f services/auth.yaml		--> create a service for auth.yaml
+	o> kubectl create -f deployments/hello.yaml
+kubectl create -f services/hello.yaml			--> creating and exposing the hello deployment
+	p> kubectl create secret generic tls-certs --from-file tls/
+kubectl create configmap nginx-frontend-conf --from-file=nginx/frontend.conf
+kubectl create -f deployments/frontend.yaml
+kubectl create -f services/frontend.yaml		--> to create and expose the frontend Deploymen
+	q> kubectl get services frontend		--> get details about frontend deployment 
+	r> curl -ks https://<EXTERNAL-IP>		--> test the frontend deployment
+	s> curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`					--> use the output templating feature of kubectl to use curl as a one-liner:
+-------- -- Scaling a deployment -------------------------------------------------
+	t> kubectl explain deployment.spec.replicas  	--> explains the field deployment.spec.replicas
+	u> kubectl scale deployment hello --replicas=5	--> replicating the deployment to 5 
+	v> kubectl get pods | grep hello- | wc -l	--> Verify that there are now 5 hello Pods running
+	w> kubectl scale deployment hello --replicas=3	--> scaling deployment to 3
+	x> kubectl get pods | grep hello- | wc -l	--> check the number of hello pods
+-------- -- Rolling update -------------------------------------------------------
+	y> kubectl edit deployment hello		--> opens up the deployments configuration yaml file to update the image in the container section of the deployment
+	 <Change the image in the containers section of the Deployment which show the version of the deployment> <Once you save out of the editor, the updated Deployment will be saved to your cluster and Kubernetes will begin a rolling update.> 
+	z> kubectl get replicaset			--> shows the replicaset
+	aa> kubectl rollout history deployment/hello	--> see a new entry in the rollout history. shows 1 enter 2 here one and 2 are the deployments
+	ab> kubectl rollout pause deployment/hello	--> to pause a rolling update
+	ac> kubectl rollout status deployment/hello	--> verifying the current state of rollout
+	ad> kubectl get pods -o jsonpath --template='{range .items[*]}{.metadata.name}{"\t"}{"\t"}{.spec.containers[0].image}{"\n"}{end}'	--> to verify the pods version
+	ae> kubectl rollout resume deployment/hello	--> to resume the paused rolling
+	af> kubectl rollout undo deployment/hello	--> to rollback the update
+	ag> kubectl get pods -o jsonpath --template='{range .items[*]}{.metadata.name}{"\t"}{"\t"}{.spec.containers[0].image}{"\n"}{end}'	--> to verify that all the pods have rolled back to previous version
+-------- -- canary deployment -----------------------------------------------------
+	ah> cat deployments/hello-canary.yaml		--> creating a new canary deployment for the new version
+	ai> kubectl create -f deployments/hello-canary.yaml											--> creating a canary deployment 
+	aj> kubectl get deployments			--> After the canary deployment is created, you should have two deployments, hello and hello-canary. Verify it with this kubectl command 
+	ak> curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version				--> verifying the canary deployment (Run this several times and you should see that some of the requests are served by hello 1.0.0 and a small subset (1/4 = 25%) are served by 2.0.0.)
+-------- -- Blue green deployment -------------------------------------------------
+	al> kubectl apply -f services/hello-blue.yaml	--> Use the existing hello service, but update it so that it has a selector app:hello, version: 1.0.0. The selector will match the existing "blue" deployment. But it will not match the "green" deployment because it will use a different version.
+	am> kubectl create -f deployments/hello-green.yaml											--> creating the green deployment 
+	an> curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version				--> check still the last deployment is in use i.e. v0.0.0.1
+	ao> kubectl apply -f services/hello-green.yaml	--> update the service to point to the new version
+	ap> curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version				--> check the version in use it will return version 2
+--------- -- Blue green rollback ---------------------------------------------------
+	aq> kubectl apply -f services/hello-blue.yaml	--> applying the blue version again
+	ar> curl -ks https://`kubectl get svc frontend -o=jsonpath="{.status.loadBalancer.ingress[0].ip}"`/version				--> check the version
+	
+17> Continuous Delivery with Jenkins in Kubernetes Engine (https://www.qwiklabs.com/focuses/1104?parent=catalog)
+
+18> Introduction to SQL for BigQuery and Cloud SQL: 
+
+19> Cloud Source Repositories: Qwik Start:
+	a> gcloud source repos create REPO_DEMO		--> creates a new Cloud Source Repository named REPO_DEMO
+	b> gcloud source repos clone REPO_DEMO		--> cloning the new cloud source repository to a local repo in cloud shell (The gcloud source repos clone command adds Cloud Source Repositories as a remote named origin and clones it into a local Git repository.)
+-------- -- push to google cloud source repository ----------------------------------
+	c> cd REPO_DEMO					--> move inside the cloned repo
+	d> echo 'Hello World!' > myfile.txt		--> make a file named myfile.txt and save Hello world! into it
+	e> git config --global user.email "you@example.com"											--> configuring the global email address
+	f> git config --global user.name "name"		--> configures global user name for the repo
+	g> git commit -m "First file using Cloud Source Repositories" myfile.txt								--> code to commit the changes 
+	h>git push origin master			--> pushing changes to the origin master 
+	
+20> Deploy Kubernetes Load Balancer Service with Terraform : 
+	a> wget https://releases.hashicorp.com/terraform/0.13.0/terraform_0.13.0_linux_amd64.zip						--> updating terraform by downloading the newest version
+	b> unzip terraform_0.13.0_linux_amd64.zip 	--> unzipping the downloaded folder
+	c> sudo mv terraform /usr/local/bin/		--> moving the executable to bin folder 
+	d> terraform -v					--> check the version of the terraform
+	e> gsutil -m cp -r gs://spls/gsp233/* .		--> cloning the sample code
+	f> cd tf-gke-k8s-service-lb			--> navigating to required folder 
+	g> cat main.tf					--> Variables are defined for region, zone, and network_name. These will be used to create the Kubernetes cluster. The Google Cloud provider will let us create resources in this project
+	h> cat k8s.tf					--> The script configures a Kubernetes provider with Terraform and creates the service, namespace and a replication_controller resource. The script returns an nginx service IP as a output.
+	i> terraform init				--> The terraform init command is used to initialize a working directory containing the Terraform configuration files.	
+	j> terraform apply				-->  used to apply the changes required to reach the desired state of the configuration. (The configuration is listed into k8s.tf file)
+	
+21> IAM Custom Roles:
+	a> echo $DEVSHELL_PROJECT_ID			--> this shows the project id
+	b> gcloud iam list-testable-permissions //cloudresourcemanager.googleapis.com/projects/$DEVSHELL_PROJECT_ID				--> lists all the uncountable permissions associated with your project
+	c> gcloud iam roles describe [ROLE_NAME]	--> gets the role's metadata (which contains the role ID and permissions contained in the roles).
+	d> gcloud iam list-grantable-roles //cloudresourcemanager.googleapis.com/projects/$DEVSHELL_PROJECT_ID					-->  list grantable roles from your project
+-------- -- creating a cutom role (using yaml file) ----------------------------------------
+	e> nano role-definition.yaml
+	f> title: "Role Editor"
+description: "Edit access for App Versions"
+stage: "ALPHA"
+includedPermissions:
+- appengine.versions.create
+- appengine.versions.delete				--> in above two command we created a yaml file which contains the description about the roles
+	g> gcloud iam roles create editor --project $DEVSHELL_PROJECT_ID \
+--file role-definition.yaml				--> this command creates the editor role as specified in the role-definition.yaml file.
+-------- -- creating a custom role (using flags) ------------------------------------------
+	i> gcloud iam roles create viewer --project $DEVSHELL_PROJECT_ID \
+--title "Role Viewer" --description "Custom role description." \
+--permissions compute.instances.get,compute.instances.list --stage ALPHA									--> this command creates a viewer role as per given specifications
+	j> gcloud iam roles list --project $DEVSHELL_PROJECT_ID											--> lists all the custom roles
+-------- -- updating the custome role using yamal file -----------------------------------
+	k> gcloud iam roles describe [ROLE_ID] --project $DEVSHELL_PROJECT_ID									--> Get the current definition for the role by executing the following gcloud command, replacing [ROLE_ID] with editor.
+	l> nano new-role-definition.yaml		--> creates a new file named as new-role-definition.yaml
+	m> - storage.buckets.get
+- storage.buckets.list					--> copy the output from the line <k> and add these 2 lines in the permission section of the openend file
+	n> gcloud iam roles update [ROLE_ID] --project $DEVSHELL_PROJECT_ID --file new-role-definition.yaml					--> updates the editor role
+--------- -- updating the custom role using the flags -------------------------------------
+	o> gcloud iam roles update viewer --project $DEVSHELL_PROJECT_ID --add-permissions storage.buckets.get,storage.buckets.list		--> adds the given two permissions to the previous viewer role. more permissions can be set by adding more permissions after commas.
+	p> gcloud iam roles update viewer --project $DEVSHELL_PROJECT_ID --stage DISABLED							--> When a role is disabled, any policy bindings related to the role are inactivated, meaning that the permissions in the role will not be granted, even if you grant the role to a user.
+	q> gcloud iam roles delete viewer --project $DEVSHELL_PROJECT_ID									--> Use the gcloud iam roles delete command to delete a custom role. Once deleted the role is inactive and cannot be used to create new IAM policy bindings.
+	r> gcloud iam roles undelete viewer --project $DEVSHELL_PROJECT_ID									--> Within the 7 days window you can undelete a role. Deleted roles are in a DISABLED state. You can make it available again by updating the --stage flag:
+
+22> Service accounts and roles: Fundamentals
+	a> gcloud iam service-accounts create my-sa-123 --display-name "my service account"							--> create a service account named my-sa-123
+	b> gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
+    --member serviceAccount:my-sa-123@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --role roles/editor						--> granting editor access to the created service account
+	c> after creating a vm and linking it to the service account
+	d> sudo apt-get update				--> download and updates the packages lists
+	e> sudo apt-get install virtualenv		--> Python virtual environments are used to isolate package installation from the system.
+	virtualenv -p python3 venv	
+	f> sudo apt-get install -y git python3-pip
+pip install google-cloud-bigquery
+pip install pandas
+Now create the example Python 				--> installing the other dependencies
+	g> echo "
+from google.auth import compute_engine
+from google.cloud import bigquery
+
+credentials = compute_engine.Credentials(
+    service_account_email='YOUR_SERVICE_ACCOUNT')
+
+query = '''
+SELECT
+  year,
+  COUNT(1) as num_babies
+FROM
+  publicdata.samples.natality
+WHERE
+  year > 2000
+GROUP BY
+  year
+'''
+
+client = bigquery.Client(
+    project='YOUR_PROJECT_ID',
+    credentials=credentials)
+print(client.query(query).to_dataframe())
+" > query.py						--> creates a file named query.py 
+	h> sed -i -e "s/YOUR_PROJECT_ID/$(gcloud config get-value project)/g" query.py								--> Add the Project ID to query.py with
+	i> sed -i -e "s/YOUR_SERVICE_ACCOUNT/bigquery-qwiklab@$(gcloud config get-value project).iam.gserviceaccount.com/g" query.py		--> Add the service account email to query.py
+	j> python query.py				--> runs the python file
+
+23> VPC Network peering:
+	a> gcloud config set project <PROJECT_ID2>				--> set project id 
+	b> gcloud compute networks create network-a --subnet-mode custom	--> create a vpc
+	c> gcloud compute networks subnets create network-a-central --network network-a \
+    --range 10.0.0.0/16 --region us-central1					--> creating a subnet
+	d> gcloud compute instances create vm-a --zone us-central1-a --network network-a --subnet network-a-central				--> creating a vpc in the given tag network
+	e> gcloud compute firewall-rules create network-a-fw --network network-a --allow tcp:22,icmp 						--> Run the following to enable SSH and icmp, because you'll need a secure shell to communicate with VMs during connectivity testing:
+	f> as same as above we made one more vpc in other project with same config, a subnet, a vm and firewall, then we peered both the networks internally and then we pinged the vm in first network via its internal ip and also with the external ip. and i verified that when pinged with internal ip, the ping time was less
+
+24> Getting Started with Cloud KMS:
+	a> BUCKET_NAME=<YOUR_NAME>_enron_corpus					--> setting up an environment variable
+	b> gsutil mb gs://${BUCKET_NAME}					--> creating a bucket
+	c> gsutil cp gs://enron_emails/allen-p/inbox/1. .			--> downloads the source file locally
+	d> tail 1.								--> to verify the email text is there
+	e> gcloud services enable cloudkms.googleapis.com			--> enabling the Kms service
+	f> KEYRING_NAME=test CRYPTOKEY_NAME=qwiklab				--> setting up environment variables
+	g> gcloud kms keyrings create $KEYRING_NAME --location global		--> creating a keyring for now we are using using a global location, but it could also be set to a specific region.
+	i> gcloud kms keys create $CRYPTOKEY_NAME --location global \
+      --keyring $KEYRING_NAME \
+      --purpose encryption							--> create crypto key
+	j> PLAINTEXT=$(cat 1. | base64 -w0)					--> setting environment variables (Base-64 encoding allows binary data to be sent to the API as plaintext. This command works for images, videos, or any other kind of binary data.)
+	k> curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:encrypt" \
+  -d "{\"plaintext\":\"$PLAINTEXT\"}" \
+  -H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
+  -H "Content-Type: application/json"						--> encryption code (The encrypt action will return a different result each time even when using same text and key.) The response will be a JSON payload containing the encrypted text in the attribute ciphertext.
+	l> curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:encrypt" \
+  -d "{\"plaintext\":\"$PLAINTEXT\"}" \
+  -H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
+  -H "Content-Type:application/json" \
+| jq .ciphertext -r > 1.encrypted						--> the command-line utility jq. The response from the previous call can be piped into jq, which can parse out the ciphertext property to the file 1.encrypted.
+	m> curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:decrypt" \
+  -d "{\"ciphertext\":\"$(cat 1.encrypted)\"}" \
+  -H "Authorization:Bearer $(gcloud auth application-default print-access-token)"\
+  -H "Content-Type:application/json" \
+| jq .plaintext -r | base64 -d							--> code for decrypting
+	n> gsutil cp 1.encrypted gs://${BUCKET_NAME}				--> upload the encrypted file to bucket
+-------- -- Back up data on the Command Line ---------------------------------------
+	o> gsutil -m cp -r gs://enron_emails/allen-p .				--> download the folder
+	p> MYDIR=allen-p
+FILES=$(find $MYDIR -type f -not -name "*.encrypted")
+for file in $FILES; do
+  PLAINTEXT=$(cat $file | base64 -w0)
+  curl -v "https://cloudkms.googleapis.com/v1/projects/$DEVSHELL_PROJECT_ID/locations/global/keyRings/$KEYRING_NAME/cryptoKeys/$CRYPTOKEY_NAME:encrypt" \
+    -d "{\"plaintext\":\"$PLAINTEXT\"}" \
+    -H "Authorization:Bearer $(gcloud auth application-default print-access-token)" \
+    -H "Content-Type:application/json" \
+  | jq .ciphertext -r > $file.encrypted
+done
+gsutil -m cp allen-p/inbox/*.encrypted gs://${BUCKET_NAME}/allen-p/inbox	--> This script loops over all the files in a given directory, encrypts them using the KMS API, and uploads them to Cloud Storage.
+
+24> Setting up a Private Kubernetes Cluster: 
+	a> gcloud config set compute/zone us-central1-a				--> setting zone of the cluster
+	b> gcloud beta container clusters create private-cluster \
+    --enable-private-nodes \
+    --master-ipv4-cidr 172.16.0.16/28 \
+    --enable-ip-alias \
+    --create-subnetwork ""							--> creating a private cluster (When you enable IP aliases, you let Kubernetes Engine automatically create a subnetwork for you.)
+	c> gcloud compute networks subnets list --network default		--> lists out all the default subnets in the cluster
+	d> gcloud compute networks subnets describe [SUBNET_NAME] --region us-central1								--> Gives info about any particular subnet
+-------- -- Enabling a master authorized network -------------------------------------------
+	e> gcloud compute instances create source-instance --zone us-central1-a --scopes 'https://www.googleapis.com/auth/cloud-platform'	--> creating a vm to connect to the cluster
+	f> gcloud compute instances describe source-instance --zone us-central1-a | grep natIP							--> prints the external ip address of the source instance
+	g> gcloud container clusters update private-cluster \
+    --enable-master-authorized-networks \
+    --master-authorized-networks [MY_EXTERNAL_RANGE]				--> add the external ip address of the above created vm to the cluster for communication. (format is natIP/32)
+	h> gcloud compute ssh source-instance --zone us-central1-a		--> SSH into source-instance
+	i> gcloud components install kubectl (this doesn't work because (You cannot perform this action because the Cloud SDK component manager is disabled for this installation)) try to install kubectl component with: sudo apt-get install kubectl.
+	j> kubectl get nodes --output yaml | grep -A4 addresses  <or> kubectl get nodes --output wide						--> erify that your cluster nodes do not have external IP addresses
+	k> exit
+	l> gcloud container clusters delete private-cluster --zone us-central1-a--> to delete the cluster 
+-------- -- Creating a private cluster that uses a custom subnetwork ------------------------
+	m> gcloud compute networks subnets create my-subnet \
+    --network default \
+    --range 10.0.4.0/22 \
+    --enable-private-ip-google-access \
+    --region us-central1 \
+    --secondary-range my-svc-range=10.0.32.0/20,my-pod-range=10.4.0.0/14 	--> creates a subnet for the future private cluster
+	n> gcloud beta container clusters create private-cluster2 \
+    --enable-private-nodes \
+    --enable-ip-alias \
+    --master-ipv4-cidr 172.16.0.32/28 \
+    --subnetwork my-subnet \
+    --services-secondary-range-name my-svc-range \
+    --cluster-secondary-range-name my-pod-range					--> creates a private cluster for the above subnet
+	n> gcloud container clusters update private-cluster2 \
+    --enable-master-authorized-networks \
+    --master-authorized-networks [MY_EXTERNAL_RANGE]				--> update your private cluster with the external ip address of the vm created above where the (format is natIP/32).
+	o> gcloud compute ssh source-instance --zone us-central1-a		--> ssh into the source instance
+	p> gcloud container clusters get-credentials private-cluster2 --zone us-central1-a							--> getting access to the private cluster 2 from ssh of the vm
+	q> kubectl get nodes --output yaml | grep -A4 addresses			--> again verifying, that the private-cluser-2 doesn't have any external ip address.
+
+25> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Terminologies: 
+ The "Qwiklabs Resources" project contains files, datasets, and machine images for certain labs and can be accessed from every Google Cloud lab environment. It's important to note that "Qwiklabs Resources" is shared (read only) with all Qwiklabs users, which means that you cannot delete or modify it.
+
+**> The Google Cloud project that you are working with is temporary, which means that the project and everything it contains will be deleted when the lab ends. Whenever you start a new lab, you will be given access to one or more new Google Cloud projects, and there (not "Qwiklabs Resources") is where you will run all of the lab steps.
+1> resources that live in a zone are reffered to as zonal resources.
+2> SSH or Secure Shell is a network communication protocol that enables two computers to communicate (c.f http or hypertext transfer protocol, which is the protocol used to transfer hypertext such as web pages) and share data.
+3> Certain Compute Engine resources live in regions or zones. A region is a specific geographical location where you can run your resources. Each region has one or more zones. For example, the us-central1 region denotes a region in the Central United States that has zones us-central1-a, us-central1-b, us-central1-c, and us-central1-f.
+4> Compute Engine lets you create and run virtual machines on Google infrastructure.
+5> Google Kubernetes Engine (GKE) clusters are powered by the Kubernetes
+6> Kubernetes an open source cluster management system.->  Kubernetes provides the mechanisms through which you interact with your container cluster. You use Kubernetes commands and resources to deploy and manage your applications, perform administrative tasks, set policies, and monitor the health of your deployed workloads.
+7> When you run a GKE cluster, you also gain the benefit of advanced cluster management features that Google Cloud provides. These include:
+Load balancing for Compute Engine instances
+Node pools to designate subsets of nodes within a cluster for additional flexibility
+Automatic scaling of your cluster's node instance count
+Automatic upgrades for your cluster's node software
+Node auto-repair to maintain node health and availability
+Logging and Monitoring with Cloud Monitoring for visibility into your cluster
+8> A cluster consists of at least one cluster master machine and multiple worker machines called nodes. Nodes are Compute Engine virtual machine (VM) instances that run the Kubernetes processes necessary to make them part of the cluster.  Note: Cluster names must start with a letter and end with an alphanumeric, and cannot be longer than 40 characters.
+9> GKE uses Kubernetes objects to create and manage your cluster's resources. Kubernetes provides the Deployment object for deploying stateless applications like web servers. Service objects define rules and load balancing for accessing your application from the internet.
+10> HTTP(S) Load Balancing is implemented on Google Front End (GFE). GFEs are distributed globally and operate together using Google's global network and control plane. You can configure URL rules to route some URLs to one set of instances and route other URLs to other instances. Requests are always routed to the instance group that is closest to the user, if that group has enough capacity and is appropriate for the request. If the closest group does not have enough capacity, the request is sent to the closest group that does have capacity.
+11> fw-allow-health-check firewall rule. This is an ingress rule that allows traffic from the Google Cloud health checking systems (130.211.0.0/22 and 35.191.0.0/16). This lab uses the target tag allow-health-check to identify the VMs.
+12> in http load balancing, there is 3 levels: url map > http proxy > forwarding rule.
+13> ACL means access control list, used for giving access for buckets or its contents from google cloud shell.
+14> Google Cloud's Identity and Access Management (IAM) service lets you create and manage permissions for Google Cloud resources. Cloud IAM unifies access control for Google Cloud services into a single system and provides a consistent set of operations. 
+15> Cloud Monitoring provides visibility into the performance, uptime, and overall health of cloud-powered applications. Cloud Monitoring collects metrics, events, and metadata from Google Cloud, Amazon Web Services, hosted uptime probes, application instrumentation, and a variety of common application components including Cassandra, Nginx, Apache Web Server, Elasticsearch, and many others. Cloud Monitoring ingests that data and generates insights via dashboards, charts, and alerts. Cloud Monitoring alerting helps you collaborate by integrating with Slack, PagerDuty, HipChat, Campfire, and more.
+
+16> Google Cloud Functions is a lightweight, event-based, asynchronous compute solution that allows you to create small, single-purpose functions that respond to cloud events without the need to manage a server or a runtime environment.
+17> the common Cloud Functions use cases:a> Data processing/ETL ( ETL is a type of data integration that refers to the three steps (extract, transform, load) used to blend data from multiple sources. It's often used to build a data warehouse) b> webhooks c> lightweight api's d> Mobile backend e> ioT 
+18> When deploying a new function, you must specify --trigger-topic, --trigger-bucket, or --trigger-http. When deploying an update to an existing function, the function keeps the existing trigger unless otherwise specified. (in function deployment using the gcloud shell)
+
+19> Google Cloud Pub/Sub is a messaging service for exchanging event data among applications and services. A producer of data publishes messages to a Cloud Pub/Sub topic. A consumer creates a subscription to that topic. Subscribers either pull messages from a subscription or are configured as webhooks for push subscriptions. Every subscriber must acknowledge each message within a configurable window of time.
+20> Google Cloud Pub/Sub is a messaging service for exchanging event data among applications and services. By decoupling senders and receivers, it allows for secure and highly available communication between independently written applications. Google Cloud Pub/Sub delivers low-latency/durable messaging, and is commonly used by developers in implementing asynchronous workflows, distributing event notifications, and streaming data from various processes or devices.
+21> A topic is a shared string that allows applications to connect with one another through a common thread. Publishers push (or publish) a message to a Cloud Pub/Sub topic. Subscribers make a "subscription" to a topic where they will either pull messages from the subscription or configure webhooks for push subscriptions. Every subscriber must acknowledge each message within a configurable window of time.
+
+22> The Identity-Aware Proxy(Cloud IAP) controls access to your cloud applications and VMs running on Google Cloud Platform(GCP). <User Authentication: Identity-Aware Proxy>
+23> Google Cloud VPCs let you increase the IP space of any subnets without any workload shutdown or downtime. This gives you flexibility and growth options to meet your needs.
+24> The ICMP stands for Internet Control Message Protocol. It is a network layer protocol. It is used for error handling in the network layer, and it is primarily used on network devices such as routers.
+25> The Secure Shell Protocol (SSH) is a cryptographic network protocol for operating network services securely over an unsecured network.
+26> Remote Desktop Protocol (RDP) is a proprietary protocol developed by Microsoft which provides a user with a graphical interface to connect to another computer over a network connection. 
+27> VPC networks are by default isolated private networking domains. However, no internal IP address communication is allowed between networks, unless you set up mechanisms such as VPC peering or VPN.
+28> To test connectivity to mynet-eu-vm's internal IP, run the following command, replacing mynet-eu-vm's internal IP: " ping -c 3 <Enter mynet-eu-vm's internal IP here>" This does not work! In a multiple interface instance, every interface gets a route for the subnet that it is in. In addition, the instance gets a single default route that is associated with the primary interface eth0. Unless manually configured otherwise, any traffic leaving an instance for any destination other than a directly connected subnet will leave the instance via the default route on eth0.
+# Once an app is protected with IAP, it can use the identity information that IAP provides in the web request headers it passes through. In this step, the application will get the logged-in user's email address and a persistent unique user ID assigned by the Google Identity Service to that user. 
+
+29> In VPC network controlling acess lab, we created 2 vm's with nginx installed on them and one more vm named test-vm(through command line). You are able to HTTP access both servers using their internal IP addresses. The connection on tcp:80 is allowed by the default-allow-internal firewall rule, as test-vm is on the same VPC network as the web servers default network).
+30>  The following roles are used in conjunction with single-project networking to independently control administrative access to each VPC Network:
+Network Admin: Permissions to create, modify, and delete networking resources, except for firewall rules and SSL certificates.
+Security Admin: Permissions to create, modify, and delete firewall rules and SSL certificates.
+31> The Compute Engine default service account does not have the right permissions to allow you to list or delete firewall rules. The same applies to other users who do not have the right roles. hence we create network or security admin roles, to alter the roles of vm's according to our need!
+
+32> Health checks determine which instances of a load balancer can receive new connections. For HTTP load balancing, the health check probes to your load balanced instances come from addresses in the ranges 130.211.0.0/22 and 35.191.0.0/16. Your firewall rules must allow these connections.
+33> An instance template is an API resource that you use to create VM instances and managed instance groups. Instance templates define the machine type, boot disk image, subnet, labels, and other instance properties.
+34> Managed instance groups offer autoscaling capabilities that allow you to automatically add or remove instances from a managed instance group based on increases or decreases in load. Autoscaling helps your applications gracefully handle increases in traffic and reduces cost when the need for resources is lower. You just define the autoscaling policy and the autoscaler performs automatic scaling based on the measured load.
+35> Backend services direct incoming traffic to one or more attached backends. Each backend is composed of an instance group and additional serving capacity metadata.
+
+36> Google Cloud offers Internal Load Balancing for your TCP/UDP-based traffic. Internal Load Balancing enables you to run and scale your services behind a private load balancing IP address that is accessible only to your internal virtual machine instances.
+37> Health checks determine which instances of a Load Balancer can receive new connections. For Internal load balancing, the health check probes to your load balanced instances come from addresses in the ranges 130.211.0.0/22 and 35.191.0.0/16. Your firewall rules must allow these connections.
+38> The startup-script-url (under the management section while creating an instance template)specifies a script that will be executed when instances are started. This script installs Apache and changes the welcome page to include the client IP and the name, region and zone of the VM instance. Feel free to explore this script
+39> Managed instance groups offer autoscaling capabilities that allow you to automatically add or remove instances from a managed instance group based on increases or decreases in load. Autoscaling helps your applications gracefully handle increases in traffic and reduces cost when the need for resources is lower. You just define the autoscaling policy and the autoscaler performs automatic scaling based on the measured load.
+
+40> Egress in the world of networking implies traffic that exits an entity or a network boundary, while Ingress is traffic that enters the boundary of a network. 
+
+41> Docker is an open platform for developing, shipping, and running applications. With Docker, you can separate your applications from your infrastructure and treat your infrastructure like a managed application. Docker helps you ship code faster, test faster, deploy faster, and shorten the cycle between writing code and running code.
+	Docker does this by combining kernel containerization features with workflows and tooling that helps you manage and deploy your applications.
+	Docker containers can be directly used in Kubernetes, which allows them to be run in the Kubernetes Engine with ease. After learning the essentials of Docker, you will have the skillset to start developing Kubernetes and containerized applications.
+42> in docker the main concept is, you make a folder, make a Dockerfile which contains the instructions about the app.js file, which containes server code. now we create an image out of this two files, with a name and a tag associated to it. (these images can be listed by using <docker ps> command)then this image can be used to run in the form of containers 
+43> To push images to your private registry hosted by gcr, you need to tag the images with a registry name. The format is [hostname]/[project-id]/[image]:[tag]
+
+44> In kubernetes deployments keep the pods up and running even when the nodes they run on fail. In Kubernetes, all containers run in a pod.
+45> Pods represent and hold a collection of one or more containers. Generally, if you have multiple containers with a hard dependency on each other, you package the containers inside a single pod.
+46> Pods can be created using pod configuration files. Pods also have Volumes. Volumes are data disks that live as long as the pods live, and can be used by the containers in that pod. Pods provide a shared namespace for their contents which means that the two containers inside of our example pod can communicate with each other, and they also share the attached volumes. Pods also share a network namespace. This means that there is one IP Address per pod.
+47> Pods aren't meant to be persistent. They can be stopped or started for many reasons - like failed liveness or readiness checks - and this leads to a problem: What happens if you want to communicate with a set of Pods? When they get restarted they might have a different IP address. That's where Services come in. Services provide stable endpoints for Pods.
+48> Services use labels to determine what Pods they operate on. If Pods have the correct labels, they are automatically picked up and exposed by our services.
+The level of access a service provides to a set of pods depends on the Service's type. Currently there are three types:
+ClusterIP (internal) -- the default type means that this Service is only visible inside of the cluster,
+NodePort -- gives each node in the cluster an externally accessible IP and
+LoadBalancer --  adds a load balancer from the cloud provider which forwards traffic from the service to Nodes within it.
+49>  Deployments are a declarative way to ensure that the number of Pods running is equal to the desired number of Pods, specified by the user.
+50> The main benefit of Deployments is in abstracting away the low level details of managing Pods. Behind the scenes Deployments use Replica Sets to manage starting and stopping the Pods. 
+
+51> Different types of application deployments are as such: "Continuous Deployment", "Blue-Green Deployments", "Canary Deployments.
+52> Heterogeneous deployments typically involve connecting two or more distinct infrastructure environments or regions to address a specific technical or operational need. Heterogeneous deployments are called "hybrid", "multi-cloud", or "public-private", depending upon the specifics of the deployment. For the purposes of this lab, heterogeneous deployments include those that span regions within a single cloud environment, multiple public cloud environments (multi-cloud), or a combination of on-premises and public cloud environments (hybrid or public-private).
+Various business and technical challenges can arise in deployments that are limited to a single environment or region:
+Maxed out resources: In any single environment, particularly in on-premises environments, you might not have the compute, networking, and storage resources to meet your production needs.
+Limited geographic reach: Deployments in a single environment require people who are geographically distant from one another to access one deployment. Their traffic might travel around the world to a central location.
+Limited availability: Web-scale traffic patterns challenge applications to remain fault-tolerant and resilient.
+Vendor lock-in: Vendor-level platform and infrastructure abstractions can prevent you from porting applications.
+Inflexible resources: Your resources might be limited to a particular set of compute, storage, or networking offerings.
+53>  When you run the "kubectl create" <16.j> command to create the auth deployment, it will make one pod that conforms to the data in the Deployment manifest. This means we can scale the number of Pods by changing the number specified in the replicas field.
+54> Deployments support updating images to a new version through a rolling update mechanism. When a Deployment is updated with a new version, it creates a new ReplicaSet and slowly increases the number of replicas in the new ReplicaSet as it decreases the replicas in the old ReplicaSet.
+55> When you want to test a new deployment in production with a subset of your users, use a canary deployment. Canary deployments allow you to release a change to a small subset of your users to mitigate risk associated with new releases.
+56> Rolling updates are ideal because they allow you to deploy an application slowly with minimal overhead, minimal performance impact, and minimal downtime. There are instances where it is beneficial to modify the load balancers to point to that new version only after it has been fully deployed. In this case, blue-green deployments are the way to go.
+Kubernetes achieves this by creating two separate deployments; one for the old "blue" version and one for the new "green" version. Use your existing hello deployment for the "blue" version. The deployments will be accessed via a Service which will act as the router. Once the new "green" version is up and running, you'll switch over to using that version by updating the Service.
+57> A major downside of blue-green deployments is that you will need to have at least 2x the resources in your cluster necessary to host your application. Make sure you have enough resources in your cluster before deploying both versions of the application at once.
+	
+58> Jenkins is an open-source automation server that lets you flexibly orchestrate your build, test, and deployment pipelines. Jenkins allows developers to iterate quickly on projects without worrying about overhead issues that can stem from continuous delivery.
+
+59> SQL (Structured Query Language) is a standard language for data operations that allows you to ask questions and get insights from structured datasets. It's commonly used in database management and allows you to perform tasks like transaction record writing into relational databases and petabyte-scale data analysis.
+60> BigQuery is a fully-managed petabyte-scale data warehouse that runs on the Google Cloud. Data analysts and data scientists can quickly query and filter large datasets, aggregate results, and perform complex operations without having to worry about setting up and managing servers.
+
+61> A service is a grouping of pods that are running on the cluster. Services are "cheap" and you can have many services within the cluster. Kubernetes services can efficiently power a microservice architecture.
+Services provide important features that are standardized across the cluster: load-balancing, service discovery between applications, and features to support zero-downtime application deployments.
+Each service has a pod label query which defines the pods which will process data for the service. This label query frequently matches pods created by one or more replication controllers. Powerful routing scenarios are possible by updating a service's label query via the Kubernetes API with deployment software.
+62> While you could use kubectl or similar CLI-based tools mapped to API calls to manage all Kubernetes resources described in YAML files, orchestration with Terraform presents a few benefits:
+-You can use the same configuration language to provision the Kubernetes infrastructure and to deploy applications into it.
+-Drift detection - terraform plan will always present you the difference between reality at a given time and config you intend to apply.
+-Full lifecycle management - Terraform doesn't just initially create resources, but offers a single command to create, update, and delete tracked resources without needing to inspect the API to identify those resources.
+-Synchronous feedback - While asynchronous behavior is often useful, sometimes it's counter-productive as the job of identifying operation result (failures or details of created resource) is left to the user. e.g. you don't have IP/hostname of load balancer until it has finished provisioning, hence you can't create any DNS record pointing to it.
+-Graph of relationships - Terraform understands relationships between resources which may help in scheduling - e.g. Terraform won't try to create a service in a Kubernetes cluster until the cluster exists.
+
+63> APM (application performance management)
+64> service level indicators (SLIs), objectives (SLOs), and agreements (SLAs)
+
+65> IAM Custom Roles: Note: You can create a custom role at the organization level and at the project level. However, you cannot create custom roles at the folder level.
+There are two kinds of roles in Cloud IAM:
+*Predefined Roles
+*Custom Roles
+66> You create a custom role by combining one or more of the available Cloud IAM permissions. Permissions allow users to perform specific actions on Google Cloud resources.
+For example, the compute.instances.list permission allows a user to list the Compute Engine instances they own, while compute.instances.stop allows a user to stop a VM.
+67> Permissions usually, but not always, correspond 1:1 with REST methods. That is, each Google Cloud service has an associated permission for each REST method that it has. To call a method, the caller needs that permission. For example, the caller of topic.publish() needs the pubsub.topics.publish permission.
+68> Custom roles can only be used to grant permissions in policies for the same project or organization that owns the roles or resources under them. You cannot grant custom roles from one project or organization on a resource owned by a different project or organization.
+69> Users who are not owners, including organization administrators, must be assigned either the "Organization Role Administrator role" (roles/iam.organizationRoleAdmin) or the IAM Role Administrator role (roles/iam.roleAdmin). 
+70> The IAM Security Reviewer role (roles/iam.securityReviewer) enables the ability to view custom roles but not administer them.
+71> The custom roles user interface is in the Cloud Console under IAM Roles. It is only available to users who have permissions to create or manage custom roles. By default, only project owners can create new roles. Project owners can control access to this feature by granting IAM Role Administrator role to others on the same project; for organizations, only Organization Administrators can grant the Organization Role, Administrator role.
+72> Role metadata includes the role ID and permissions contained in the role. You can view the metadata using the Cloud Console or the IAM API. by using the command <gcloud iam roles describe [ROLE_NAME]>
+73> To create a custom role, a caller must possess iam.roles.create permission. By default, the owner of a project or an organization has this permission and can create and manage custom roles.
+74> we can use gcloud iam roles create command in two ways to create new custom roles: i.e 1> By providing a YAML file that contains the role definition	2> By using flags to specify the role definition When creating a custom role, you must specify whether it applies to the organization level or project level by using the --organization [ORGANIZATION_ID] or --project [PROJECT_ID] flags. Each example below creates a custom role at the project level.
+75> updating custiome roles is done using etags, for example: f two owners for a project try to make conflicting changes to a role at the same time, some changes could fail.hence, etag is used,  This property is used to verify if the custom role has changed since the last request. When you make a request to Cloud IAM with an etag value, Cloud IAM compares the etag value in the request with the existing etag value associated with the custom role. It writes the change only if the etag values match.
+76> Use the gcloud iam roles update command to update custom roles. You can use this command in two ways:
+By providing a YAML file that contains the updated role definition
+By using flags to specify the updated role definition
+
+77> Service accounts are a special type of Google account that grant permissions to virtual machines instead of end users. Service accounts are primarily used to ensure safe, managed connections to APIs and Google Cloud services. Granting access to trusted connections and rejecting malicious ones is a must-have security feature for any Google Cloud project.
+78> A service account is a special Google account that belongs to your application or a virtual machine (VM) instead of an individual end user. Your application uses the service account to call the Google API of a service, so that the users aren't directly involved.
+For example, a Compute Engine VM may run as a service account, and that account can be given permissions to access the resources it needs. This way the service account is the identity of the service, and the service account's permissions control which resources the service can access.
+79> Different types of service accounts 
+*User-managed service accounts
+	When you create a new Cloud project using Cloud Console and if Compute Engine API is enabled for your project, a Compute Engine Service account is created for you by default. It is identifiable using the email: PROJECT_NUMBER-compute@developer.gserviceaccount.com
+	If your project contains an App Engine application, the default App Engine service account is created in your project by default. It is identifiable using the email: PROJECT_ID@appspot.gserviceaccount.com
+*Google-managed service accounts
+	In addition to the user-managed service accounts, you might see some additional service accounts in your project’s IAM policy or in the Cloud Console. These service accounts are created and owned by Google. These accounts represent different Google services and each account is automatically granted IAM roles to access your Google Cloud project.
+*Google APIs service account
+	An example of a Google-managed service account is a Google API service account identifiable using the email:PROJECT_NUMBER@cloudservices.gserviceaccount.com This service account is designed specifically to run internal Google processes on your behalf and is not listed in the Service Accounts section of Cloud Console. By default, the account is automatically granted the project editor role on the project and is listed in the IAM section of Cloud Console. This service account is deleted only when the project is deleted. Google services rely on the account having access to your project, so you should not remove or change the service account’s role on your project.
+80> When you create a new Cloud project, Google Cloud automatically creates one Compute Engine service account and one App Engine service account under that project. You can create up to 98 additional service accounts to your project to control access to your resources.
+81> Creating a service account is similar to adding a member to your project, but the service account belongs to your applications rather than an individual end user.
+82> When an identity calls a Google Cloud API, Google Cloud Identity and Access Management requires that the identity has the appropriate permissions to use the resource. You can grant permissions by granting roles to a user, a group, or a service account.
+83> Types of Roles
+There are three types of roles in Cloud IAM:
+*Primitive roles, which include the Owner, Editor, and Viewer roles that existed prior to the introduction of Cloud IAM.
+*Predefined roles, which provide granular access for a specific service and are managed by Google Cloud.
+*Custom roles, which provide granular access according to a user-specified list of permissions.
+84> here in this lab we did the following:
+	a) we created a virtual machine and gave the vm a door keeper i.e. the service account which contains the two permissions i.e.(Role: BigQuery Data Viewer and BigQuery User)
+	b) now we opened the ssh of the vm created and installed python and its dependencies on it, then ran a querry which required some public databases acess
+	c) here, comes the use of the service account. as the code on the ssh demands the access of the database the authorized service account serves as a passage for the vm to access the data base when needed!
+
+85> VPC Network Peering allows you to build SaaS (Software-as-a-Service) ecosystems in Google Cloud, making services available privately across different VPC networks within and across organizations, allowing workloads to communicate in private space.
+86> VPC Network Peering gives you several advantages over using external IP addresses or VPNs to connect networks, including:
+*Network Latency: Private networking offeres lower latency than public IP networking.
+*Network Security: Service owners do not need to have their services exposed to the public Internet and deal with its associated risks.
+*Network Cost: Networks that are peered can use internal IPs to communicate and save Google Cloud egress bandwidth costs. Regular network pricing still applies to all traffic.
+87> Project names are unique across all of Google Cloud, so you do not need to specify the organization when setting up peering. Google Cloud knows the organization based on the project name.
+
+88> Cloud KMS is a REST API that can use a key to encrypt, decrypt, or sign data such as secrets for storage. High global availability. Cloud KMS is available in several global locations and across multi-regions, allowing you to place your service where you want for low latency and high availability
+89> In order to encrypt the data, you need to create a KeyRing and a CryptoKey. KeyRings are useful for grouping keys. Keys can be grouped by environment (like test, staging, and prod) or by some other conceptual grouping. For this lab, your KeyRing will be called test and your CryptoKey will be called qwiklab.
+90> Note: CryptoKeys and KeyRings cannot be deleted in Cloud KMS!
+91> In KMS, there are two major permissions to focus on. One permissions allows a user or service account to manage KMS resources, the other allows a user or service account to use keys to encrypt and decrypt data.
+The permission to manage keys is cloudkms.admin, and allows anyone with the permission to create KeyRings and create, modify, disable, and destroy CryptoKeys. The permission to encrypt and decrypt is cloudkms.cryptoKeyEncrypterDecrypter, and is used to call the encrypt and decrypt API endpoints.
+
+92> Only TCP, UDP and ICMP traffic may be mirrored. This, however, should satisfy the majority of use cases.
+"Mirrored Sources" and "Collectors" must be in the SAME Region, but can be in different zones and even different VPCs, as long as those VPCs are properly Peered.
+Additional bandwidth charges apply, especially between zones. To limit the traffic being mirrored, filters can be used.
+
+93> In Kubernetes Engine, a private cluster is a cluster that makes your master inaccessible from the public internet. In a private cluster, nodes do not have public IP addresses, only private addresses, so your workloads run in an isolated environment. Nodes and masters communicate with each other using VPC peering.
+94> When you create a private cluster, you must specify a /28 CIDR range (In the Kubernetes Engine API, address ranges are expressed as Classless Inter-Domain Routing (CIDR) blocks.) for the VMs that run the Kubernetes master components and you need to enable IP aliases.
+95>  When you enable IP aliases, you let Kubernetes Engine automatically create a subnetwork for you.
+96> in case of private cluster beta keyword is used 
+97> In private cluster, the only IP addresses that have access to the master are the addresses in these ranges:
+The primary range of your subnetwork. This is the range used for nodes.
+The secondary range of your subnetwork that is used for pods.
+98> 
