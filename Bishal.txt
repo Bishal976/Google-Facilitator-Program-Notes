@@ -795,4 +795,23 @@ Additional bandwidth charges apply, especially between zones. To limit the traff
 97> In private cluster, the only IP addresses that have access to the master are the addresses in these ranges:
 The primary range of your subnetwork. This is the range used for nodes.
 The secondary range of your subnetwork that is used for pods.
-98> 
+
+98> All services need to exist as a part of a project and each project has a single billing account linked to it. though a billing account can have multiple associated projects and billing reports invoice will be able to breakdown cost by project.
+99> Billing accounts can be directly linked to a google payments profile which is located outside of cloud, and it is used to pay for all google services like gsuits and google ads.
+100> Billing accounts is set from the gcp console whereas for google payment profile visit: https://payments.google.com .
+101> Understanding your gcp invoice : The bills can be paid via 2 options they are: 1> self serve or online (this is a default option while setting up a billing account, use debit or credit card for payment) 2> invoiced : 	(check or wired transfer and google assists with signup)
+102> customers who are using the online metod for payment method receive a monthly statement whereas customers who have switched to invoice billing account receive a pdf invoice which is a request for payment
+103> if you are looking for detailed gcp costs, reffer to the billing report on the gcp console 
+104> exporting data to biGQuerry and creating a data studio to further explore it : these all actions can only be performed by billing administratiors
+
+105> BigQuery is Google's serverless, highly scalable enterprise data warehouse that is designed to make data analysts more productive with unmatched price-performance.
+106> Google Data Studio allows you to unlock the power of your data with interactive dashboards and beautiful reports that inspire smarter business decisions.
+With Data Studio, you can:
+#Connect: easily access a wide variety of data. With built in and partner connectors, you can connect to virtually any type of data stream.
+#Visualize: turn your data into compelling stories of data visualization art. You can quickly build dashboards with Data Studio's web-based reporting tools.
+#Share: share your reports and dashboards with individuals, teams, or the world. Collaborate in real time. Embed your report on any page.
+
+106> The Sheets data connector for BigQuery is available only to G Suite Business, Enterprise, and Education accounts.
+107> 
+   
+
