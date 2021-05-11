@@ -596,11 +596,33 @@ gsutil -m cp allen-p/inbox/*.encrypted gs://${BUCKET_NAME}/allen-p/inbox	--> Thi
 	p> gcloud container clusters get-credentials private-cluster2 --zone us-central1-a							--> getting access to the private cluster 2 from ssh of the vm
 	q> kubectl get nodes --output yaml | grep -A4 addresses			--> again verifying, that the private-cluser-2 doesn't have any external ip address.
 
-25> 
+25> Setting up Jenkins on Kubernetes Engine:
+	a> gcloud config set compute/zone us-east1-d
+	b> git clone https://github.com/GoogleCloudPlatform/continuous-deployment-on-kubernetes.git
+	c> cd continuous-deployment-on-kubernetes
+-------- -- creating a kubernetes cluster ------------------------------------
+	d> gcloud container clusters create jenkins-cd \
+--num-nodes 2 \
+--machine-type n1-standard-2 \
+--scopes "https://www.googleapis.com/auth/projecthosting,cloud-platform" 	--> creates a kubernetes cluster
+	e> gcloud container clusters list					--> lists all the clusters
+	f> gcloud container clusters get-credentials jenkins-cd			--> Get the credentials for your cluster. Kubernetes Engine uses these credentials to access your newly provisioned cluster.
+	g> kubectl cluster-info							--> get info about the cluster
+	i> helm repo add stable https://charts.helm.sh/stable			--> Add Helm's stable chart repository:
+	j> helm repo update							--> Update the repo to ensure you get the latest list of charts
+-------- -- Configure and install jenkins -----------------------------------
+	k> helm install cd stable/jenkins -f jenkins/values.yaml --version 1.2.2 --wait								-->Use the Helm CLI to deploy the chart with your configuration set
+	l> kubectl get pods							-->  ensure the Jenkins pod goes to the Running state and the container is in the READY state
+	m> export POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/component=jenkins-master" -l "app.kubernetes.io/instance=cd" -o jsonpath="{.items[0].metadata.name}")
+kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwarding to the Jenkins UI from the Cloud Shell
+	n> kubectl get svc							--> now check that jenkins service was created properly
+	o> printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo				--> gets password for the jenkins web login
 
+26> Continuous Delivery Pipelines with Spinnaker and Kubernetes Engine:
 
+27> Deploying a Fault-Tolerant Microsoft Active Directory Environment
 
-
+28> Deploying Memcached on Kubernetes Engine:
 
 
 
@@ -812,6 +834,19 @@ With Data Studio, you can:
 #Share: share your reports and dashboards with individuals, teams, or the world. Collaborate in real time. Embed your report on any page.
 
 106> The Sheets data connector for BigQuery is available only to G Suite Business, Enterprise, and Education accounts.
-107> 
+
+107> The autoscaling application uses a Node.js script installed on Compute Engine instances. The script reports a numeric value to a Cloud monitoring metric. In response to the value of the metric, the application autoscales the Compute Engine instance group up or down as needed.
+108> Compute Engine instance template - A template used to create each instance in the instance group.
+# Cloud Storage - A bucket used to host the startup script and other script files.
+# Compute Engine startup script - A startup script that installs the necessary code components on each instance. The startup script is installed and started automatically when an instance starts. When the startup script runs, it in turn installs and starts code on the instance that writes values to the Cloud monitoring custom metric.
+# Compute Engine instance group - An instance group that autoscales based on the Cloud monitoring metric values.
+# Compute Engine instances - A variable number of Compute Engine instances.
+# Custom Cloud Monitoring metric - A custom monitoring metric used as the input value for Compute Engine instance group autoscaling.
+
+109> Helm is a package manager that makes it easy to configure and deploy Kubernetes applications. Your Cloud Shell will already have a recent, stable version of Helm pre-installed.
+
+110> Memcached is one of the most popular open source, multi-purpose caching systems. It usually serves as a temporary store for frequently used data to speed up web applications and lighten database loads.
+111> The Memcached Helm chart uses a StatefulSet controller. One benefit of using a StatefulSet controller is that the pods' names are ordered and predictable
+112> 
    
 
