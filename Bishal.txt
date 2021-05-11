@@ -66,7 +66,7 @@ commands:
     sudo apt-get update
     sudo apt-get install apache2 -y
     sudo service apache2 restart
-    echo '<!doctype html><html><body><h1>www1</h1></body></html>' | tee /var/www/html/index.html"      ==> creating instances
+    echo '<!doctype html><html><body><h1>Hello World!</h1></body></html>' | sudo tee /var/www/html/index.html      ==> creating instances
 	b> gcloud compute firewall-rules create www-firewall-network-lb \
     --target-tags network-lb-tag --allow tcp:80      --> creating firewall traffic to the vm instances.
 	c> gcloud compute instances list   --> getting the details of the instances created along with their external and internal ip's.
@@ -625,9 +625,7 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 28> Deploying Memcached on Kubernetes Engine:
 
 
-
-
-
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 
