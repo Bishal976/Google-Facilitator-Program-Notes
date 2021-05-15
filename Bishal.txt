@@ -628,7 +628,38 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
+29> Weather Data in BigQuery
 
+30> Classify Images of Clouds in the Cloud with AutoML Vision
+	a> enable the Cloud AutoML API.
+	b> export PROJECT_ID=$DEVSHELL_PROJECT_ID   				--> setting the environment variable for the project id
+	c> export QWIKLABS_USERNAME=<USERNAME>  				--> setting the username environment variable
+	d> gcloud projects add-iam-policy-binding $PROJECT_ID \
+    --member="user:$QWIKLABS_USERNAME" \
+    --role="roles/automl.admin"							--> assigning the permission to the api
+	e> gsutil mb -p $PROJECT_ID \
+    -c standard    \
+    -l us-central1 \
+    gs://$PROJECT_ID-vcm/							--> creating the bucket for data storage
+	f> export BUCKET=$PROJECT_ID-vcm					--> setting bucket name environment variable
+	g> gsutil -m cp -r gs://spls/gsp223/images/* gs://${BUCKET}		--> copying the image data from the internet to the bucket
+-------- -- Creating a dataset ----------------------------------------------
+	h> gsutil cp gs://spls/gsp223/data.csv .				--> copying an old csv file to the bucket from internet
+	i> sed -i -e "s/placeholder/${BUCKET}/g" ./data.csv			--> updating the csv file with the required data that we copied from the internet 
+	J> gsutil cp ./data.csv gs://${BUCKET}					--> sending or copying the updated csv file to the bucket
+	i> https://console.cloud.google.com/vision/datasets			--> go to autovision interface and create a new dataset
+	j> select single lable classification and select the csv on the cloud to be imported after checking the option "Select a CSV file on Cloud Storage".
+-------- -- Training the model ---------------------------------------------
+	k> To train your clouds model, go to the Train tab and click Start Training. Enter a name for your model, or use the default auto-generated name. Leave Cloud-hosted selected, then click Continue. Set the node hours to 8.
+-------- -- Deploy your model ----------------------------------------------
+	l> Navigate to the Test & Use tab in the AutoML UI: Deploy model then Deploy.
+-------- -- Generating predictions -----------------------------------------
+	
+31> Google Assistant: Build a Restaurant Locator with the Places API
+	a> Basically here we have to make an action on our cloud platform, which takes voice input that what is your location, and some other questions and based on these questions it suggests you the best matches (i.e nearby restaurents on a map)
+	b> The task is divided into 4 major tasks 1> creating a dialog flow connector/webhook (which will send request 200 to the function on cloud). 2> creating action/intent on the dialogflog (it will act as an input/output for the entire project) 
+		3> APIs (a} Places API, this api provides pictures and informations of places; b} Geocoding API, this api converts the location obtained from the Places API to coordinates c} Maps JavaScript Api, This api uses the coordinates to plot the places on the map for the user as output)
+		4> The last part consists of creating a function on cloud, which will show the plottings, Api key is created before it and is provided inside the function's codes.
 
 
 
@@ -845,6 +876,24 @@ With Data Studio, you can:
 
 110> Memcached is one of the most popular open source, multi-purpose caching systems. It usually serves as a temporary store for frequently used data to speed up web applications and lighten database loads.
 111> The Memcached Helm chart uses a StatefulSet controller. One benefit of using a StatefulSet controller is that the pods' names are ordered and predictable
-112> 
-   
 
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+112> BigQuery is a fully-managed, serverless data warehouse and a Big Data Analytics Platform, that enables scalable analysis over petabytes of data. It is a Platform as a Service that supports querying using ANSI SQL. It also has built-in machine learning capabilities.
+113> You will encounter, for the first time, several aspects of Google Cloud that are of great benefit to scientists:
+# Serverless -- No need to download data to your machine in order to work with it - the dataset will remain on the cloud.
+# Ease of use -- Run ad-hoc SQL queries on your dataset without having to prepare the data, like indexes, beforehand. This is invaluable for data exploration.
+# Scale -- Carry out data exploration on extremely large datasets interactively. You don't need to sample the data in order to work with it in a timely manner.
+# Shareability -- You will be able to run queries on data from different datasets without any issues. BigQuery is a convenient way to share datasets. Of course, you can also keep your data private, or share them only with specific persons -- not all data need to be public.
+   
+114> AutoML Vision helps developers with limited ML expertise train high quality image recognition models. Once you upload images to the AutoML UI, you can train a model that will be immediately available on Google Cloud for generating predictions via an easy to use REST API.
+
+115> The Places API is a service that returns information about points of interest by using HTTP requests. More specifically, you will take advantage of the Place Details and Place Photos services to receive detailed information and photos of establishments.
+
+116> The App Engine standard environment is based on container instances running on Google's infrastructure. Containers are preconfigured with one of several available runtimes (Java 7, Java 8, Python 2.7, Go and PHP). Each runtime also includes libraries that support App Engine Standard APIs.
+117> The App Engine standard environment makes it easy to build and deploy an application that runs reliably even under heavy load and with large amounts of data. It includes the following features:
+# Persistent storage with queries, sorting, and transactions.
+# Automatic scaling and load balancing.
+# Asynchronous task queues for performing work outside the scope of a request.
+# Scheduled tasks for triggering events at specified times or regular intervals.
+# Integration with other Google cloud services and APIs.
+118> 
