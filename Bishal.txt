@@ -50,12 +50,12 @@ commands:
 	a> gcloud config set compute/zone us-central1-a  
 --------- creating a GKE cluster------------------
 	b> gcloud container clusters create [CLUSTER-NAME]   --> creates a gcloud cluster
-	c> gcloud container clusters get-credentials [CLUSTER-NAME]   --> gets authentication credentials for the cluster
+	c> gcloud container clusters get-credentials [CLUSTER-NAME]   			--> gets authentication credentials for the cluster
 --------- deploying an application to the cluster --------------------------
 	d> kubectl create deployment hello-server --image=gcr.io/google-samples/hello-app:1.0   --> creates a new Deployment hello-server from the hello-app container image,  (This Kubernetes command creates a Deployment object that represents hello-server. In this case, --image specifies a container image to deploy. The command pulls the example image from a Container Registry bucket. gcr.io/google-samples/hello-app:1.0 indicates the specific image version to pull. If a version is not specified, the latest version is used.)
 	e> kubectl expose deployment hello-server --type=LoadBalancer --port 8080   --> create a Kubernetes Service, which is a Kubernetes resource that lets you expose your application to external traffic(--port specifies the port that the container exposes. type="LoadBalancer" creates a Compute Engine load balancer for your container.)
-	f> kubectl get service   ||  http://[EXTERNAL-IP]:8080--> inspect the hello-server Service
-	g> gcloud container clusters delete [CLUSTER-NAME]   --> deleting the cluster.	
+	f> kubectl get service   ||  http://[EXTERNAL-IP]:8080			--> inspect the hello-server Service
+	g> gcloud container clusters delete [CLUSTER-NAME]  			--> deleting the cluster.	
 8> Back Set Up Network and HTTP Load Balancers:
 	a> gcloud compute instances create www1 \
   --image-family debian-9 \
@@ -139,6 +139,7 @@ commands:
         --global \
         --target-http-proxy=http-lb-proxy \
         --ports=80							    --> creating a global forwarding rule to route the incoming request to the proxy
+
 9> Cloud Storage: Qwik Start - CLI/SDK:
 	a> gsutil mb gs://YOUR BUCKET NAME/                      --> creates a bucket from the google cloud shell
 	b> wget --output-document ada.jpg https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Ada_Lovelace_portrait.jpg/800px-Ada_Lovelace_portrait.jpg                --> creates an instance named ada.jpg in shell and downloads the image into it
@@ -678,12 +679,12 @@ Terminologies:
 5> Google Kubernetes Engine (GKE) clusters are powered by the Kubernetes
 6> Kubernetes an open source cluster management system.->  Kubernetes provides the mechanisms through which you interact with your container cluster. You use Kubernetes commands and resources to deploy and manage your applications, perform administrative tasks, set policies, and monitor the health of your deployed workloads.
 7> When you run a GKE cluster, you also gain the benefit of advanced cluster management features that Google Cloud provides. These include:
-Load balancing for Compute Engine instances
-Node pools to designate subsets of nodes within a cluster for additional flexibility
-Automatic scaling of your cluster's node instance count
-Automatic upgrades for your cluster's node software
-Node auto-repair to maintain node health and availability
-Logging and Monitoring with Cloud Monitoring for visibility into your cluster
+ # Load balancing for Compute Engine instances
+ # Node pools to designate subsets of nodes within a cluster for additional flexibility
+ # Automatic scaling of your cluster's node instance count
+ # Automatic upgrades for your cluster's node software
+ # Node auto-repair to maintain node health and availability
+ # Logging and Monitoring with Cloud Monitoring for visibility into your cluster
 8> A cluster consists of at least one cluster master machine and multiple worker machines called nodes. Nodes are Compute Engine virtual machine (VM) instances that run the Kubernetes processes necessary to make them part of the cluster.  Note: Cluster names must start with a letter and end with an alphanumeric, and cannot be longer than 40 characters.
 9> GKE uses Kubernetes objects to create and manage your cluster's resources. Kubernetes provides the Deployment object for deploying stateless applications like web servers. Service objects define rules and load balancing for accessing your application from the internet.
 10> HTTP(S) Load Balancing is implemented on Google Front End (GFE). GFEs are distributed globally and operate together using Google's global network and control plane. You can configure URL rules to route some URLs to one set of instances and route other URLs to other instances. Requests are always routed to the instance group that is closest to the user, if that group has enough capacity and is appropriate for the request. If the closest group does not have enough capacity, the request is sent to the closest group that does have capacity.
@@ -694,7 +695,12 @@ Logging and Monitoring with Cloud Monitoring for visibility into your cluster
 15> Cloud Monitoring provides visibility into the performance, uptime, and overall health of cloud-powered applications. Cloud Monitoring collects metrics, events, and metadata from Google Cloud, Amazon Web Services, hosted uptime probes, application instrumentation, and a variety of common application components including Cassandra, Nginx, Apache Web Server, Elasticsearch, and many others. Cloud Monitoring ingests that data and generates insights via dashboards, charts, and alerts. Cloud Monitoring alerting helps you collaborate by integrating with Slack, PagerDuty, HipChat, Campfire, and more.
 
 16> Google Cloud Functions is a lightweight, event-based, asynchronous compute solution that allows you to create small, single-purpose functions that respond to cloud events without the need to manage a server or a runtime environment.
-17> the common Cloud Functions use cases:a> Data processing/ETL ( ETL is a type of data integration that refers to the three steps (extract, transform, load) used to blend data from multiple sources. It's often used to build a data warehouse) b> webhooks c> lightweight api's d> Mobile backend e> ioT 
+17> the common Cloud Functions use cases:
+	a> Data processing/ETL ( ETL is a type of data integration that refers to the three steps (extract, transform, load) used to blend data from multiple sources. It's often used to build a data warehouse) 
+	b> webhooks: Webhooks are one of a few ways web applications can communicate with each other. It allows you to send real-time data from one application to another whenever a given event occurs. 
+	c> lightweight api's 
+	d> Mobile backend 
+	e> ioT 
 18> When deploying a new function, you must specify --trigger-topic, --trigger-bucket, or --trigger-http. When deploying an update to an existing function, the function keeps the existing trigger unless otherwise specified. (in function deployment using the gcloud shell)
 
 19> Google Cloud Pub/Sub is a messaging service for exchanging event data among applications and services. A producer of data publishes messages to a Cloud Pub/Sub topic. A consumer creates a subscription to that topic. Subscribers either pull messages from a subscription or are configured as webhooks for push subscriptions. Every subscriber must acknowledge each message within a configurable window of time.
@@ -703,17 +709,17 @@ Logging and Monitoring with Cloud Monitoring for visibility into your cluster
 
 22> The Identity-Aware Proxy(Cloud IAP) controls access to your cloud applications and VMs running on Google Cloud Platform(GCP). <User Authentication: Identity-Aware Proxy>
 23> Google Cloud VPCs let you increase the IP space of any subnets without any workload shutdown or downtime. This gives you flexibility and growth options to meet your needs.
-24> The ICMP stands for Internet Control Message Protocol. It is a network layer protocol. It is used for error handling in the network layer, and it is primarily used on network devices such as routers.
+24> The ICMP stands for (Internet Control Message Protocol). It is a network layer protocol. It is used for error handling in the network layer, and it is primarily used on network devices such as routers.
 25> The Secure Shell Protocol (SSH) is a cryptographic network protocol for operating network services securely over an unsecured network.
 26> Remote Desktop Protocol (RDP) is a proprietary protocol developed by Microsoft which provides a user with a graphical interface to connect to another computer over a network connection. 
 27> VPC networks are by default isolated private networking domains. However, no internal IP address communication is allowed between networks, unless you set up mechanisms such as VPC peering or VPN.
-28> To test connectivity to mynet-eu-vm's internal IP, run the following command, replacing mynet-eu-vm's internal IP: " ping -c 3 <Enter mynet-eu-vm's internal IP here>" This does not work! In a multiple interface instance, every interface gets a route for the subnet that it is in. In addition, the instance gets a single default route that is associated with the primary interface eth0. Unless manually configured otherwise, any traffic leaving an instance for any destination other than a directly connected subnet will leave the instance via the default route on eth0.
+28> To test connectivity to mynet-eu-vm's internal IP, run the following command, replacing mynet-eu-vm's internal IP: " ping -c 3 <Enter mynet-eu-vm's internal IP here>" This does not work! In a multiple interface instance, every interface gets a route for the subnet that it is in. In addition, the instance gets a single default route that is associated with the primary interface eth0. Unless manually configured otherwise, any traffic leaving an instance for any destination other than a directly connected subnet will leave the instance via the default route on eth0. we can use external ip to communicate from any vpc to any other vpc, but by using internal ip we can only communicte to the vm in same vpc.
 # Once an app is protected with IAP, it can use the identity information that IAP provides in the web request headers it passes through. In this step, the application will get the logged-in user's email address and a persistent unique user ID assigned by the Google Identity Service to that user. 
 
 29> In VPC network controlling acess lab, we created 2 vm's with nginx installed on them and one more vm named test-vm(through command line). You are able to HTTP access both servers using their internal IP addresses. The connection on tcp:80 is allowed by the default-allow-internal firewall rule, as test-vm is on the same VPC network as the web servers default network).
 30>  The following roles are used in conjunction with single-project networking to independently control administrative access to each VPC Network:
-Network Admin: Permissions to create, modify, and delete networking resources, except for firewall rules and SSL certificates.
-Security Admin: Permissions to create, modify, and delete firewall rules and SSL certificates.
+ # Network Admin: Permissions to create, modify, and delete networking resources, except for firewall rules and SSL certificates.
+ # Security Admin: Permissions to create, modify, and delete firewall rules and SSL certificates.
 31> The Compute Engine default service account does not have the right permissions to allow you to list or delete firewall rules. The same applies to other users who do not have the right roles. hence we create network or security admin roles, to alter the roles of vm's according to our need!
 
 32> Health checks determine which instances of a load balancer can receive new connections. For HTTP load balancing, the health check probes to your load balanced instances come from addresses in the ranges 130.211.0.0/22 and 35.191.0.0/16. Your firewall rules must allow these connections.
@@ -730,7 +736,7 @@ Security Admin: Permissions to create, modify, and delete firewall rules and SSL
 
 41> Docker is an open platform for developing, shipping, and running applications. With Docker, you can separate your applications from your infrastructure and treat your infrastructure like a managed application. Docker helps you ship code faster, test faster, deploy faster, and shorten the cycle between writing code and running code.
 	Docker does this by combining kernel containerization features with workflows and tooling that helps you manage and deploy your applications.
-	Docker containers can be directly used in Kubernetes, which allows them to be run in the Kubernetes Engine with ease. After learning the essentials of Docker, you will have the skillset to start developing Kubernetes and containerized applications.
+	Docker containers can be directly used in Kubernetes, which allows them to be run in the Kubernetes Engine with ease. 
 42> in docker the main concept is, you make a folder, make a Dockerfile which contains the instructions about the app.js file, which containes server code. now we create an image out of this two files, with a name and a tag associated to it. (these images can be listed by using <docker ps> command)then this image can be used to run in the form of containers 
 43> To push images to your private registry hosted by gcr, you need to tag the images with a registry name. The format is [hostname]/[project-id]/[image]:[tag]
 
@@ -740,20 +746,20 @@ Security Admin: Permissions to create, modify, and delete firewall rules and SSL
 47> Pods aren't meant to be persistent. They can be stopped or started for many reasons - like failed liveness or readiness checks - and this leads to a problem: What happens if you want to communicate with a set of Pods? When they get restarted they might have a different IP address. That's where Services come in. Services provide stable endpoints for Pods.
 48> Services use labels to determine what Pods they operate on. If Pods have the correct labels, they are automatically picked up and exposed by our services.
 The level of access a service provides to a set of pods depends on the Service's type. Currently there are three types:
-ClusterIP (internal) -- the default type means that this Service is only visible inside of the cluster,
-NodePort -- gives each node in the cluster an externally accessible IP and
-LoadBalancer --  adds a load balancer from the cloud provider which forwards traffic from the service to Nodes within it.
+ # ClusterIP (internal) -- the default type means that this Service is only visible inside of the cluster,
+ # NodePort -- gives each node in the cluster an externally accessible IP and
+ # LoadBalancer --  adds a load balancer from the cloud provider which forwards traffic from the service to Nodes within it.
 49>  Deployments are a declarative way to ensure that the number of Pods running is equal to the desired number of Pods, specified by the user.
 50> The main benefit of Deployments is in abstracting away the low level details of managing Pods. Behind the scenes Deployments use Replica Sets to manage starting and stopping the Pods. 
 
 51> Different types of application deployments are as such: "Continuous Deployment", "Blue-Green Deployments", "Canary Deployments.
 52> Heterogeneous deployments typically involve connecting two or more distinct infrastructure environments or regions to address a specific technical or operational need. Heterogeneous deployments are called "hybrid", "multi-cloud", or "public-private", depending upon the specifics of the deployment. For the purposes of this lab, heterogeneous deployments include those that span regions within a single cloud environment, multiple public cloud environments (multi-cloud), or a combination of on-premises and public cloud environments (hybrid or public-private).
 Various business and technical challenges can arise in deployments that are limited to a single environment or region:
-Maxed out resources: In any single environment, particularly in on-premises environments, you might not have the compute, networking, and storage resources to meet your production needs.
-Limited geographic reach: Deployments in a single environment require people who are geographically distant from one another to access one deployment. Their traffic might travel around the world to a central location.
-Limited availability: Web-scale traffic patterns challenge applications to remain fault-tolerant and resilient.
-Vendor lock-in: Vendor-level platform and infrastructure abstractions can prevent you from porting applications.
-Inflexible resources: Your resources might be limited to a particular set of compute, storage, or networking offerings.
+ # Maxed out resources: In any single environment, particularly in on-premises environments, you might not have the compute, networking, and storage resources to meet your production needs.
+ # Limited geographic reach: Deployments in a single environment require people who are geographically distant from one another to access one deployment. Their traffic might travel around the world to a central location.
+ # Limited availability: Web-scale traffic patterns challenge applications to remain fault-tolerant and resilient.
+ # Vendor lock-in: Vendor-level platform and infrastructure abstractions can prevent you from porting applications.
+ # Inflexible resources: Your resources might be limited to a particular set of compute, storage, or networking offerings.
 53>  When you run the "kubectl create" <16.j> command to create the auth deployment, it will make one pod that conforms to the data in the Deployment manifest. This means we can scale the number of Pods by changing the number specified in the replicas field.
 54> Deployments support updating images to a new version through a rolling update mechanism. When a Deployment is updated with a new version, it creates a new ReplicaSet and slowly increases the number of replicas in the new ReplicaSet as it decreases the replicas in the old ReplicaSet.
 55> When you want to test a new deployment in production with a subset of your users, use a canary deployment. Canary deployments allow you to release a change to a small subset of your users to mitigate risk associated with new releases.
@@ -788,12 +794,12 @@ For example, the compute.instances.list permission allows a user to list the Com
 67> Permissions usually, but not always, correspond 1:1 with REST methods. That is, each Google Cloud service has an associated permission for each REST method that it has. To call a method, the caller needs that permission. For example, the caller of topic.publish() needs the pubsub.topics.publish permission.
 68> Custom roles can only be used to grant permissions in policies for the same project or organization that owns the roles or resources under them. You cannot grant custom roles from one project or organization on a resource owned by a different project or organization.
 69> Users who are not owners, including organization administrators, must be assigned either the "Organization Role Administrator role" (roles/iam.organizationRoleAdmin) or the IAM Role Administrator role (roles/iam.roleAdmin). 
-70> The IAM Security Reviewer role (roles/iam.securityReviewer) enables the ability to view custom roles but not administer them.
+* 70> The IAM Security Reviewer role (roles/iam.securityReviewer) enables the ability to view custom roles but not administer them.
 71> The custom roles user interface is in the Cloud Console under IAM Roles. It is only available to users who have permissions to create or manage custom roles. By default, only project owners can create new roles. Project owners can control access to this feature by granting IAM Role Administrator role to others on the same project; for organizations, only Organization Administrators can grant the Organization Role, Administrator role.
 72> Role metadata includes the role ID and permissions contained in the role. You can view the metadata using the Cloud Console or the IAM API. by using the command <gcloud iam roles describe [ROLE_NAME]>
 73> To create a custom role, a caller must possess iam.roles.create permission. By default, the owner of a project or an organization has this permission and can create and manage custom roles.
 74> we can use gcloud iam roles create command in two ways to create new custom roles: i.e 1> By providing a YAML file that contains the role definition	2> By using flags to specify the role definition When creating a custom role, you must specify whether it applies to the organization level or project level by using the --organization [ORGANIZATION_ID] or --project [PROJECT_ID] flags. Each example below creates a custom role at the project level.
-75> updating custiome roles is done using etags, for example: f two owners for a project try to make conflicting changes to a role at the same time, some changes could fail.hence, etag is used,  This property is used to verify if the custom role has changed since the last request. When you make a request to Cloud IAM with an etag value, Cloud IAM compares the etag value in the request with the existing etag value associated with the custom role. It writes the change only if the etag values match.
+75> updating custom roles is done using etags, for example: f two owners for a project try to make conflicting changes to a role at the same time, some changes could fail.hence, etag is used,  This property is used to verify if the custom role has changed since the last request. When you make a request to Cloud IAM with an etag value, Cloud IAM compares the etag value in the request with the existing etag value associated with the custom role. It writes the change only if the etag values match.
 76> Use the gcloud iam roles update command to update custom roles. You can use this command in two ways:
 By providing a YAML file that contains the updated role definition
 By using flags to specify the updated role definition
@@ -814,9 +820,9 @@ For example, a Compute Engine VM may run as a service account, and that account 
 82> When an identity calls a Google Cloud API, Google Cloud Identity and Access Management requires that the identity has the appropriate permissions to use the resource. You can grant permissions by granting roles to a user, a group, or a service account.
 83> Types of Roles
 There are three types of roles in Cloud IAM:
-*Primitive roles, which include the Owner, Editor, and Viewer roles that existed prior to the introduction of Cloud IAM.
-*Predefined roles, which provide granular access for a specific service and are managed by Google Cloud.
-*Custom roles, which provide granular access according to a user-specified list of permissions.
+ *Primitive roles, which include the Owner, Editor, and Viewer roles that existed prior to the introduction of Cloud IAM.
+ *Predefined roles, which provide granular access for a specific service and are managed by Google Cloud.
+ *Custom roles, which provide granular access according to a user-specified list of permissions.
 84> here in this lab we did the following:
 	a) we created a virtual machine and gave the vm a door keeper i.e. the service account which contains the two permissions i.e.(Role: BigQuery Data Viewer and BigQuery User)
 	b) now we opened the ssh of the vm created and installed python and its dependencies on it, then ran a querry which required some public databases acess
@@ -824,18 +830,18 @@ There are three types of roles in Cloud IAM:
 
 85> VPC Network Peering allows you to build SaaS (Software-as-a-Service) ecosystems in Google Cloud, making services available privately across different VPC networks within and across organizations, allowing workloads to communicate in private space.
 86> VPC Network Peering gives you several advantages over using external IP addresses or VPNs to connect networks, including:
-*Network Latency: Private networking offeres lower latency than public IP networking.
-*Network Security: Service owners do not need to have their services exposed to the public Internet and deal with its associated risks.
-*Network Cost: Networks that are peered can use internal IPs to communicate and save Google Cloud egress bandwidth costs. Regular network pricing still applies to all traffic.
+ *Network Latency: Private networking offeres lower latency than public IP networking.
+ *Network Security: Service owners do not need to have their services exposed to the public Internet and deal with its associated risks.
+ *Network Cost: Networks that are peered can use internal IPs to communicate and save Google Cloud egress bandwidth costs. Regular network pricing still applies to all traffic.
 87> Project names are unique across all of Google Cloud, so you do not need to specify the organization when setting up peering. Google Cloud knows the organization based on the project name.
 
-88> Cloud KMS is a REST API that can use a key to encrypt, decrypt, or sign data such as secrets for storage. High global availability. Cloud KMS is available in several global locations and across multi-regions, allowing you to place your service where you want for low latency and high availability
-89> In order to encrypt the data, you need to create a KeyRing and a CryptoKey. KeyRings are useful for grouping keys. Keys can be grouped by environment (like test, staging, and prod) or by some other conceptual grouping. For this lab, your KeyRing will be called test and your CryptoKey will be called qwiklab.
-90> Note: CryptoKeys and KeyRings cannot be deleted in Cloud KMS!
-91> In KMS, there are two major permissions to focus on. One permissions allows a user or service account to manage KMS resources, the other allows a user or service account to use keys to encrypt and decrypt data.
-The permission to manage keys is cloudkms.admin, and allows anyone with the permission to create KeyRings and create, modify, disable, and destroy CryptoKeys. The permission to encrypt and decrypt is cloudkms.cryptoKeyEncrypterDecrypter, and is used to call the encrypt and decrypt API endpoints.
+-88> Cloud KMS is a REST API that can use a key to encrypt, decrypt, or sign data such as secrets for storage. High global availability. Cloud KMS is available in several global locations and across multi-regions, allowing you to place your service where you want for low latency and high availability
+-89> In order to encrypt the data, you need to create a KeyRing and a CryptoKey. KeyRings are useful for grouping keys. Keys can be grouped by environment (like test, staging, and prod) or by some other conceptual grouping. For this lab, your KeyRing will be called test and your CryptoKey will be called qwiklab.
+-90> Note: CryptoKeys and KeyRings cannot be deleted in Cloud KMS!
+-91> In KMS, there are two major permissions to focus on. One permissions allows a user or service account to manage KMS resources, the other allows a user or service account to use keys to encrypt and decrypt data.
+-The permission to manage keys is cloudkms.admin, and allows anyone with the permission to create KeyRings and create, modify, disable, and destroy CryptoKeys. The permission to encrypt and decrypt is cloudkms.cryptoKeyEncrypterDecrypter, and is used to call the encrypt and decrypt API endpoints.
 
-92> Only TCP, UDP and ICMP traffic may be mirrored. This, however, should satisfy the majority of use cases.
+-92> Only TCP, UDP and ICMP traffic may be mirrored. This, however, should satisfy the majority of use cases.
 "Mirrored Sources" and "Collectors" must be in the SAME Region, but can be in different zones and even different VPCs, as long as those VPCs are properly Peered.
 Additional bandwidth charges apply, especially between zones. To limit the traffic being mirrored, filters can be used.
 
@@ -858,25 +864,26 @@ The secondary range of your subnetwork that is used for pods.
 105> BigQuery is Google's serverless, highly scalable enterprise data warehouse that is designed to make data analysts more productive with unmatched price-performance.
 106> Google Data Studio allows you to unlock the power of your data with interactive dashboards and beautiful reports that inspire smarter business decisions.
 With Data Studio, you can:
-#Connect: easily access a wide variety of data. With built in and partner connectors, you can connect to virtually any type of data stream.
-#Visualize: turn your data into compelling stories of data visualization art. You can quickly build dashboards with Data Studio's web-based reporting tools.
-#Share: share your reports and dashboards with individuals, teams, or the world. Collaborate in real time. Embed your report on any page.
+ #Connect: easily access a wide variety of data. With built in and partner connectors, you can connect to virtually any type of data stream.
+ #Visualize: turn your data into compelling stories of data visualization art. You can quickly build dashboards with Data Studio's web-based reporting tools.
+ #Share: share your reports and dashboards with individuals, teams, or the world. Collaborate in real time. Embed your report on any page.
 
 106> The Sheets data connector for BigQuery is available only to G Suite Business, Enterprise, and Education accounts.
 
 107> The autoscaling application uses a Node.js script installed on Compute Engine instances. The script reports a numeric value to a Cloud monitoring metric. In response to the value of the metric, the application autoscales the Compute Engine instance group up or down as needed.
 108> Compute Engine instance template - A template used to create each instance in the instance group.
-# Cloud Storage - A bucket used to host the startup script and other script files.
-# Compute Engine startup script - A startup script that installs the necessary code components on each instance. The startup script is installed and started automatically when an instance starts. When the startup script runs, it in turn installs and starts code on the instance that writes values to the Cloud monitoring custom metric.
-# Compute Engine instance group - An instance group that autoscales based on the Cloud monitoring metric values.
-# Compute Engine instances - A variable number of Compute Engine instances.
-# Custom Cloud Monitoring metric - A custom monitoring metric used as the input value for Compute Engine instance group autoscaling.
+ # Cloud Storage - A bucket used to host the startup script and other script files.
+ # Compute Engine startup script - A startup script that installs the necessary code components on each instance. The startup script is installed and started automatically when an instance starts. When the startup script runs, it in turn installs and starts code on the instance that writes values to the Cloud monitoring custom metric.
+ # Compute Engine instance group - An instance group that autoscales based on the Cloud monitoring metric values.
+ # Compute Engine instances - A variable number of Compute Engine instances.
+ # Custom Cloud Monitoring metric - A custom monitoring metric used as the input value for Compute Engine instance group autoscaling.
 
 109> Helm is a package manager that makes it easy to configure and deploy Kubernetes applications. Your Cloud Shell will already have a recent, stable version of Helm pre-installed.
 
 110> Memcached is one of the most popular open source, multi-purpose caching systems. It usually serves as a temporary store for frequently used data to speed up web applications and lighten database loads.
 111> The Memcached Helm chart uses a StatefulSet controller. One benefit of using a StatefulSet controller is that the pods' names are ordered and predictable
 
+** HTTP is a Hypertext Transfer Protocol, whereas TCP full form is Transmission Control Protocol. HTTP is utilized to access websites, while TCP is a session establishment protocol between client and server. HTTP uses port 80 and TCP uses no port. ... HTTP is faster in comparison to TCP, which is slower.
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 112> BigQuery is a fully-managed, serverless data warehouse and a Big Data Analytics Platform, that enables scalable analysis over petabytes of data. It is a Platform as a Service that supports querying using ANSI SQL. It also has built-in machine learning capabilities.
 113> You will encounter, for the first time, several aspects of Google Cloud that are of great benefit to scientists:
