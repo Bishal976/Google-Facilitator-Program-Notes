@@ -687,6 +687,49 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 
 34> Google Assistant: Build a Youtube Entertainment App:
 	
+35> Extract, Analyze, and Translate Text from Images with the Cloud ML APIs
+	a> creating an API key
+	b> making a bucket and storing a picture in it
+	c> {
+  "requests": [
+      {
+        "image": {
+          "source": {
+              "gcsImageUri": "gs://my-bucket-name/sign.jpg"
+          }
+        },
+        "features": [
+          {
+            "type": "TEXT_DETECTION",
+            "maxResults": 10
+          }
+        ]
+      }
+  ]
+}										--> this is the ocr-request.json file
+	d> curl -s -X POST -H "Content-Type: application/json" --data-binary @ocr-request.json  https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}--> calls the vision api text detection method
+	e> The OCR method is able to extract lots of text from our image, <output is obtained on the console>
+	f> curl -s -X POST -H "Content-Type: application/json" --data-binary @ocr-request.json  https://vision.googleapis.com/v1/images:annotate?key=${API_KEY} -o ocr-response.json--> copies the response from the ocr to ocr-response.json file
+	g> {
+  "q": "your_text_here",
+  "target": "en"
+}										--> format of translation-request.json file
+	h> STR=$(jq .responses[0].textAnnotations[0].description ocr-response.json) && STR="${STR//\"}" && sed -i "s|your_text_here|$STR|g" translation-request.json--> copies the data from the ocr-response.json to translation-request.json
+	i> curl -s -X POST -H "Content-Type: application/json" --data-binary @translation-request.json https://translation.googleapis.com/language/translate/v2?key=${API_KEY} -o translation-response.json--> send request to translation api and stores response to translation-response.json
+	j> {
+  "document":{
+    "type":"PLAIN_TEXT",
+    "content":"your_text_here"
+  },
+  "encodingType":"UTF8"
+}										--> format of n1-request.json file for sending request to nlp api
+	k> STR=$(jq .data.translations[0].translatedText  translation-response.json) && STR="${STR//\"}" && sed -i "s|your_text_here|$STR|g" nl-request.json	--> copying the data from translation-response.json to ni-request.json in respective format
+	l> curl "https://language.googleapis.com/v1/documents:analyzeEntities?key=${API_KEY}" \
+  -s -X POST -H "Content-Type: application/json" --data-binary @nl-request.json	--> request sent to nlp api via n1-request.json
+
+
+36> Classify Text into Categories with the Natural Language API:
+	a> 
 		
 
 
@@ -961,4 +1004,6 @@ With Data Studio, you can:
 138> We'll start with the Cloud Vision API's text detection method to make use of Optical Character Recognition (OCR) to extract text from images. Then we'll learn how to translate that text with the Translation API and analyze it with the Natural Language API.:   There are two ways to send an image to the Vision API for image detection: by sending the API a base64 encoded image string, or passing it the URL of a file stored in Cloud Storage. For this lab you'll create a Cloud Storage bucket to store your images.
 139> curl is a command line tool to transfer data to or from a server, using any of the supported protocols (HTTP, FTP, IMAP, POP3, SCP, SFTP, SMTP, TFTP, TELNET, LDAP or FILE). curl is powered by Libcurl. This tool is preferred for automation, since it is designed to work without user interaction.
 
-140> 
+140> Cloud Vision API's text detection method to make use of Optical Character Recognition (OCR) to extract text from images.
+142> The Translation API can translate text into 100+ languages. It can also detect the language of the input text. To translate the French text into English, all you need to do is pass the text and the language code for the target language (en-US) to the Translation API.
+143> 	The Natural Language API helps us understand text by extracting entities, analyzing sentiment and syntax, and classifying text into categories. Use the analyzeEntities method to see what entities the Natural Language API can find in the text from your image.
