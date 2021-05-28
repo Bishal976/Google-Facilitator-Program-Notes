@@ -707,7 +707,7 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
       }
   ]
 }										--> this is the ocr-request.json file
-	d> curl -s -X POST -H "Content-Type: application/json" --data-binary @ocr-request.json  https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}--> calls the vision api text detection method
+	d> curl -s -X POST -H "Content-Type: application/json" --data-binary @ocr-request.json  https://vision.googleapis.com/v1/images:annotate?key=${API_KEY}--> calls the vision api text detection method. It returns (description & boundingPoly) of the text on the image.
 	e> The OCR method is able to extract lots of text from our image, <output is obtained on the console>
 	f> curl -s -X POST -H "Content-Type: application/json" --data-binary @ocr-request.json  https://vision.googleapis.com/v1/images:annotate?key=${API_KEY} -o ocr-response.json--> copies the response from the ocr to ocr-response.json file
 	g> {
@@ -1006,4 +1006,27 @@ With Data Studio, you can:
 
 140> Cloud Vision API's text detection method to make use of Optical Character Recognition (OCR) to extract text from images.
 142> The Translation API can translate text into 100+ languages. It can also detect the language of the input text. To translate the French text into English, all you need to do is pass the text and the language code for the target language (en-US) to the Translation API.
-143> 	The Natural Language API helps us understand text by extracting entities, analyzing sentiment and syntax, and classifying text into categories. Use the analyzeEntities method to see what entities the Natural Language API can find in the text from your image.
+143> The Natural Language API helps us understand text by extracting entities, analyzing sentiment and syntax, and classifying text into categories. Use the analyzeEntities method to see what entities the Natural Language API can find in the text from your image.
+
+144> Using the Natural Language API's classifyText method, you can sort text data into categories with a single API call. This method returns a list of content categories that apply to a text document. These categories range in specificity, from broad categories like /Computers & Electronics to highly specific categories such as /Computers & Electronics/Programming/Java (Programming Language). A full list of 700+ possible categories can be found here.
+145> a service account is required when we are automating the process (scanning data from google cloud bucket, sending it to the nlp api, receiving and storing the data into a bigquerry table)
+	
+146> label detection.>>>  This method will return a list of labels (words) of what's in your image. it provides ("mid": "/m/01dk8s","description": "Powdered sugar", "Score": 0.9861496, "topicality": 0.9861496)
+147> mid value that maps to the item's mid in Google's Knowledge Graph. You can use the mid when calling the Knowledge Graph API to get more information on the item.
+148> webdetection >>> In addition to getting labels on what's in your image, the Vision API can also search the Internet for additional details on your image. Through the API's webDetection method, you get a lot of interesting data back:
+A list of entities found in your image, based on content from pages with similar images
+# URLs of exact and partial matching images found across the web, along with the URLs of those pages
+# URLs of similar images, like doing a reverse image search
+149> If you inpsect the URLs under fullMatchingImages, partialMatchingImages, and pagesWithMatchingImages, you'll notice that many of the URLs point to this lab site (super meta!).
+150>face detection >>>the components received:
+# boundingPoly gives you the x,y coordinates around the face in the image.
+# fdBoundingPoly is a smaller box than boundingPoly, focusing on the skin part of the face.
+# landmarks is an array of objects for each facial feature, some you may not have even known about. This tells us the type of landmark, along with the 3D position of that feature (x,y,z coordinates) where the z coordinate is the depth. The remaining values gives you more details on the face, including the likelihood of joy, sorrow, anger, and surprise.
+151> landmark detection >>> attributes recieved:
+ # the mid of the landmark
+ # it's name (description)
+ # a confidence score
+ # The boundingPoly shows the region in the image where the landmark was identified.
+ # The locations key tells us the latitude longitude coordinates of the picture.
+
+
