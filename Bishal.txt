@@ -625,7 +625,6 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 
 28> Deploying Memcached on Kubernetes Engine:
 
-
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -637,7 +636,7 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	c> export QWIKLABS_USERNAME=<USERNAME>  				--> setting the username environment variable
 	d> gcloud projects add-iam-policy-binding $PROJECT_ID \
     --member="user:$QWIKLABS_USERNAME" \
-    --role="roles/automl.admin"							--> assigning the permission to the api
+    --role="roles/automl.admin"							--> assigning the permission to the api via granting the automl admin role to the user 
 	e> gsutil mb -p $PROJECT_ID \
     -c standard    \
     -l us-central1 \
@@ -658,11 +657,37 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	
 31> Google Assistant: Build a Restaurant Locator with the Places API
 	a> Basically here we have to make an action on our cloud platform, which takes voice input that what is your location, and some other questions and based on these questions it suggests you the best matches (i.e nearby restaurents on a map)
-	b> The task is divided into 4 major tasks 1> creating a dialog flow connector/webhook (which will send request 200 to the function on cloud). 2> creating action/intent on the dialogflog (it will act as an input/output for the entire project) 
+	b> The task is divided into 4 subtasks 1> creating a dialog flow connector/webhook (which will send request 200 to the function on cloud). 2> creating action/intent on the dialogflog (it will act as an input/output for the entire project) 
 		3> APIs (a} Places API, this api provides pictures and informations of places; b} Geocoding API, this api converts the location obtained from the Places API to coordinates c} Maps JavaScript Api, This api uses the coordinates to plot the places on the map for the user as output)
 		4> The last part consists of creating a function on cloud, which will show the plottings, Api key is created before it and is provided inside the function's codes.
 
+32>  Introduction to APIs in Google: 
+	a> https://console.cloud.google.com/apis/library/storage-api.googleapis.com?_ga=2.263178572.-1708473792.1539023585          --> ensure cloud api is enabled
+	b> nano values.json
+	c> {  "name": "<YOUR_BUCKET_NAME>",
+   "location": "us",
+   "storageClass": "multi_regional"
+}										--> add this data into the values.json file it contains the data for the cloud bucket
+	d> Authenticate and authorize the Cloud Storage JSON/REST API(authenticate from any of the sources < API keys, OAuth,service accounts>). select the api and gain the access token
+	e> export OAUTH2_TOKEN=<YOUR_TOKEN>
+	f> export PROJECT_ID=<YOUR_PROJECT_ID>
+	g> curl -X POST --data-binary @values.json \
+    -H "Authorization: Bearer $OAUTH2_TOKEN" \
+    -H "Content-Type: application/json" \
+    "https://www.googleapis.com/storage/v1/b?project=$PROJECT_ID" 		--> create a bucket using the rest api
+	h> realpath demo-image.png						--> getting path to the image stored somewhere on the shell
+	i> export OBJECT=<DEMO_IMAGE_PATH>					--> exporting the path 
+	j> export BUCKET_NAME=<YOUR_BUCKET>					--> exporting the bucket name
+	i> curl -X POST --data-binary @$OBJECT \
+    -H "Authorization: Bearer $OAUTH2_TOKEN" \
+    -H "Content-Type: image/png" \
+    "https://www.googleapis.com/upload/storage/v1/b/$BUCKET_NAME/o?uploadType=media&name=demo-image"					--> uploading the image from the specefied location to the cloud storage, using cloud storage rest api
+	
+33> Google Assistant: Build an Application with Dialogflow and Cloud Functions
 
+34> Google Assistant: Build a Youtube Entertainment App:
+	
+		
 
 
 
@@ -887,10 +912,10 @@ With Data Studio, you can:
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 112> BigQuery is a fully-managed, serverless data warehouse and a Big Data Analytics Platform, that enables scalable analysis over petabytes of data. It is a Platform as a Service that supports querying using ANSI SQL. It also has built-in machine learning capabilities.
 113> You will encounter, for the first time, several aspects of Google Cloud that are of great benefit to scientists:
-# Serverless -- No need to download data to your machine in order to work with it - the dataset will remain on the cloud.
-# Ease of use -- Run ad-hoc SQL queries on your dataset without having to prepare the data, like indexes, beforehand. This is invaluable for data exploration.
-# Scale -- Carry out data exploration on extremely large datasets interactively. You don't need to sample the data in order to work with it in a timely manner.
-# Shareability -- You will be able to run queries on data from different datasets without any issues. BigQuery is a convenient way to share datasets. Of course, you can also keep your data private, or share them only with specific persons -- not all data need to be public.
+ # Serverless -- No need to download data to your machine in order to work with it - the dataset will remain on the cloud.
+ # Ease of use -- Run ad-hoc SQL queries on your dataset without having to prepare the data, like indexes, beforehand. This is invaluable for data exploration.
+ # Scale -- Carry out data exploration on extremely large datasets interactively. You don't need to sample the data in order to work with it in a timely manner.
+ # Shareability -- You will be able to run queries on data from different datasets without any issues. BigQuery is a convenient way to share datasets. Of course, you can also keep your data private, or share them only with specific persons -- not all data need to be public.
    
 114> AutoML Vision helps developers with limited ML expertise train high quality image recognition models. Once you upload images to the AutoML UI, you can train a model that will be immediately available on Google Cloud for generating predictions via an easy to use REST API.
 
@@ -898,9 +923,42 @@ With Data Studio, you can:
 
 116> The App Engine standard environment is based on container instances running on Google's infrastructure. Containers are preconfigured with one of several available runtimes (Java 7, Java 8, Python 2.7, Go and PHP). Each runtime also includes libraries that support App Engine Standard APIs.
 117> The App Engine standard environment makes it easy to build and deploy an application that runs reliably even under heavy load and with large amounts of data. It includes the following features:
-# Persistent storage with queries, sorting, and transactions.
-# Automatic scaling and load balancing.
-# Asynchronous task queues for performing work outside the scope of a request.
-# Scheduled tasks for triggering events at specified times or regular intervals.
-# Integration with other Google cloud services and APIs.
-118> 
+ # Persistent storage with queries, sorting, and transactions.
+ # Automatic scaling and load balancing.
+ # Asynchronous task queues for performing work outside the scope of a request.
+ # Scheduled tasks for triggering events at specified times or regular intervals.
+ # Integration with other Google cloud services and APIs.
+118> It is capable of building Web Application Archive (WAR) files for deployment into App Engine. Google provides a plugin and Maven Archetypes that are supported by Maven 3.5 or newer.
+
+119> Dialogflow, which uses an underlying machine learning (ML) and natural language understanding (NLU) schema to build rich Assistant applications.
+120> Action is interaction built for Google Assistant that performs specific tasks based on user input
+121> Agent is A module that uses NLU and ML to transform user input into actionable data to be used by an Assistant application
+122> Intent Takes user input and channels it to trigger an event.
+
+123> APIs (Application Programming Interfaces) are software programs that give developers access to computing resources and data. Companies from many different fields offer publicly available APIs so that developers can integrate specialized tools, services, or libraries with their own applications and codebase.
+124> Client server model - The internet is the standard communication channel that APIs use to transmit requests and responses between programs. The client-server model is the underlying architecture that web-based APIs use for exchanging information.
+125> Since APIs use the web as a communication channel, many of them adhere to the HTTP protocol, which specifies rules and methods for data exchange between clients and servers over the internet. The HTTP protocol is not only used by APIs — it is the standard for web communication where data is sent and received over the internet.
+126> Endpoints are access points to data or computing resources hosted on a server and they take the form of an HTTP URI. Endpoints are added to an API's base URL (e.g. http://example.com) to create a path to a specific resource or container of resources. The following are some examples of endpoints: http://example.com/storelocations
+127> APIs that utilize the HTTP protocol, request methods, and endpoints are referred to as RESTful APIs. REST (Representational State Transfer) is an architectural style that prescribes standards for web-based communication.
+128> JSON data is composed of key-value pairs. These are linked pieces of data that are composed of a unique identifier (a key) that references piece(s) of data (value). The key must be of type string and the value can be any of the data types (boolean, null, strings, arrays, Numbers).
+129> Authentication refers to the process of determining a client's identity.                      Authorization refers to the process of determining what permissions an authenticated client has for a set of resources.
+130> There are three types of authentication/authorization services that Google APIs use. These are "API Keys", "Service accounts", and "OAuth". An API will use one of these authentication services depending on the resources it requests and from where the API is called from.
+ # API Keys : API keys are secret tokens that usually come in the form of an encrypted string. API keys are quick to generate and use. APIs that use public data or methods and want to get developers up and running quickly will oftentimes use API keys to authenticate users.
+	In Google Cloud terms, API keys identify the calling project making the call to an API. By identifying the calling project, API keys enable usage information to be associated with that project, and they can reject calls from projects that haven't been granted access or enabled by the API.
+ # OAuth: OAuth tokens are similar to API keys in their format, but they are more secure and can be linked to user accounts or identities. These tokens are used primarily when APIs give a developer the means to access user data.
+	While API keys give developers access to all of an API's functionality, OAuth client IDs are all based on scope; different privileges will be granted to different identities.
+ # Service Accounts: A service account is a special type of Google account that belongs to your application or a virtual machine (VM) instead of to an individual end user. Your application assumes the identity of the service account to call Google APIs, so that the users aren't directly involved.
+	You can use a service account by providing its private key to your application, or by using the built-in service accounts available when running on Cloud Functions, Google App Engine, Compute Engine, or Google Kubernetes Engine.
+
+131> Actions is the central platform for developing Google Assistant applications. The Actions platform integrates with human-computer interaction suites, which simplifies conversational app development. The most widely used suite is Dialogflow, which uses an underlying machine learning (ML) and natural language understanding (NLU) schema to build rich Assistant applications. The Actions platform also integrates with Cloud Functions, which lets you run backend fulfillment code in response to events triggered by Dialogflow requests
+132> An agent is an organizational unit that collects information needed to complete a user's request, which it then forwards to a service that provides fulfillment logic.
+133> When you created the Dialogflow agent, a Default Welcome intent is automatically created. This intent represents the main entry point into your conversation and the main action of your app. Your app must have a Default Welcome Intent defined, so that Actions on Google knows how to invoke your app
+134> Entities extract specific data from user expressions and store them in accessible variables. By assigning this portion of the user says to be an entity, Dialogflow can extract parameters from the user input, validate the parameter and provide it to your fulfillment as a variable.
+135> Slot filling also lets you set parameters as being required so that your agent doesn't process the input until the user provides all required parameters.
+136> while creating a cloud function, index.js tab is open. This file defines your fulfillment logic and is used to create and deploy a Cloud Function
+137> Now open the package.json tab. This file declares package dependencies for your fulfillment, including the Actions client library. 
+
+138> We'll start with the Cloud Vision API's text detection method to make use of Optical Character Recognition (OCR) to extract text from images. Then we'll learn how to translate that text with the Translation API and analyze it with the Natural Language API.:   There are two ways to send an image to the Vision API for image detection: by sending the API a base64 encoded image string, or passing it the URL of a file stored in Cloud Storage. For this lab you'll create a Cloud Storage bucket to store your images.
+139> curl is a command line tool to transfer data to or from a server, using any of the supported protocols (HTTP, FTP, IMAP, POP3, SCP, SFTP, SMTP, TFTP, TELNET, LDAP or FILE). curl is powered by Libcurl. This tool is preferred for automation, since it is designed to work without user interaction.
+
+140> 
