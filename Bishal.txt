@@ -731,7 +731,19 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 36> Classify Text into Categories with the Natural Language API:
 	https://github.com/GoogleCloudPlatform/cloud-vision/tree/master/python/awwvision
 
-37> 
+37> App Dev: Setting up a Development Environment - Python:
+	a> making a vm and starting ssh: >> sudo apt-get update : to update the Debian package list
+	b> sudo apt-get install git						--> install git on vm
+	c> sudo apt-get install python3-setuptools python3-dev build-essential	--> installing python on vm
+	d> curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py +  sudo python3 get-pip.py							--> installing pip on the vm
+	e> python3 --version   + pip3 --version    				--> checking versions
+	f> git clone https://github.com/GoogleCloudPlatform/training-data-analyst								--> cloning the required repo on our vm
+	g> cd ~/training-data-analyst/courses/developingapps/python/devenv/
+	i> sudo python3 server.py						--> running the server code written in python now we can use the external ip provided by the virtual instance to see our server up and running
+	j> sudo pip3 install -r requirements.txt				--> Install the Python packages needed to enumerate Compute Engine VM instance
+	k> python3 list-gce-instances.py <PROJECT_ID> --zone=<YOUR_VM_ZONE>	--> running the list-gce-instances.py to enumerate the compute engine vm instances/
+
+38> 
 
 
 
