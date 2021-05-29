@@ -729,8 +729,9 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 
 
 36> Classify Text into Categories with the Natural Language API:
-	a> 
-		
+	https://github.com/GoogleCloudPlatform/cloud-vision/tree/master/python/awwvision
+
+37> 
 
 
 
@@ -1051,4 +1052,12 @@ A list of entities found in your image, based on content from pages with similar
  # lemma is the canonical form of the word. For example, the words run, runs, ran, and running all have a lemma of run. The lemma value is useful for tracking occurrences of a word in a large piece of text over time.
 162> The Natural Language API also supports languages other than English. here you didn't tell the API which language the text is, it can automatically detect it! Next, you send it to the analyzeEntities endpoint
 
-163> 
+163> Python virtual environments are used to isolate package installation from the system.
+164> The Awwvision lab uses Kubernetes and Cloud Vision API to demonstrate how to use the Vision API to classify (label) images from Reddit's /r/aww subreddit and display the labelled results in a web app. Awwvision has three components:
+ # A simple Redis instance.
+ # A web app that displays the labels and associated images.
+ # A worker that handles scraping Reddit for images and classifying them using the Vision API. Cloud Pub/Sub is used to coordinate tasks between multiple worker instances.
+
+165> Each project ID is unique across Google Cloud. Once you have created a project, you can delete the project but its ID can never be used again.
+166> A project serves as a namespace. This means every resource within each project must have a unique name, but you can usually reuse resource names if they are in separate projects. Some resource names must be globally unique. Refer to the documentation for the resource for details.
+167> 
