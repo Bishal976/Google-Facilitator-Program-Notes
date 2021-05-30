@@ -743,7 +743,24 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	j> sudo pip3 install -r requirements.txt				--> Install the Python packages needed to enumerate Compute Engine VM instance
 	k> python3 list-gce-instances.py <PROJECT_ID> --zone=<YOUR_VM_ZONE>	--> running the list-gce-instances.py to enumerate the compute engine vm instances/
 
-38> 
+38> App Dev: Storing Application Data in Cloud Datastore - Python
+
+39> App Dev: Storing Image and Video Files in Cloud Storage - Python
+	a> git clone https://github.com/GoogleCloudPlatform/training-data-analyst--> cloning the code repo
+	b> ln -s ~/training-data-analyst/courses/developingapps/v1.2/python/firebase ~/firebase							--> creating a soft link
+	c> cd ~/firebase/start
+	d> . prepare_environment.sh						--> prepare_environment.sh contains all the things to to installed on the shell. It runs and (Creates an App Engine application. Creates a Cloud Storage bucket named gs:[Project-ID]-media. Exports two environment variables: GCLOUD_PROJECT and GCLOUD_BUCKET. Runs > pip install -r requirements.txt. Creates entities in Cloud Datastore. Prints out the Project ID.)
+	e> python run_server.py
+	f> working with firebase (open firebase console > add your project via adding project id > accept the conditions .. > Build > Authentication > add sign in method > click Authorized domain > )
+	g> Apply Firebase configuration to a web application			--> Click the web icon. Register your app - give your app a nick name, then click Register app.
+	h> copy firebase SDK scripts 
+	I> add it to index.html in  training_data_analyst/courses/developingapps/v1.2/python/firebase/start/quiz/webapp/static/client/.
+	j> <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-auth.js"></script>    						--> add this below the previous lines
+	k> test
+
+40> 
+
+
 
 
 
@@ -1072,4 +1089,10 @@ A list of entities found in your image, based on content from pages with similar
 
 165> Each project ID is unique across Google Cloud. Once you have created a project, you can delete the project but its ID can never be used again.
 166> A project serves as a namespace. This means every resource within each project must have a unique name, but you can usually reuse resource names if they are in separate projects. Some resource names must be globally unique. Refer to the documentation for the resource for details.
-167> 
+
+167> Google Cloud Datastore is a NoSQL document database built for automatic scaling, high performance, and ease of application development. 
+168> Cloud Datastore requires you to create an App Engine application in your project.
+
+169> Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.
+
+170> 
