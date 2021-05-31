@@ -1095,4 +1095,5 @@ A list of entities found in your image, based on content from pages with similar
 
 169> Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.
 
-170> 
+170> Google App Engine lets you manage resources from the command line, debug source code in production and run API backends. This lab concentrates on the backend service, putting together Pub/Sub, Natural Language, and Spanner services and APIs to collect and analyze feedback and scores from an online Quiz application.
+171> 
