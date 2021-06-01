@@ -296,6 +296,7 @@ docker images						-->  remove the child images (of node:6) before you remove th
 docker run -p 4000:80 -d gcr.io/[project-id]/node-app:0.2
 curl http://localhost:4000				-->  Pull the image and run it.
  
+
 15> Orchestrating the Cloud with Kubernetes:
 	a> gcloud config set compute/zone us-central1-b	--> set the compute zone
 	b> gcloud container clusters create io		--> starts a cluster named io
@@ -758,7 +759,26 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	j> <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-auth.js"></script>    						--> add this below the previous lines
 	k> test
 
-40> 
+40> App Dev - Deploying the Application into App Engine Flexible Environment - Java (same concepts <just like docker>)
+	checkout (https://www.qwiklabs.com/focuses/1060?parent=catalog)
+
+41> Cloud Profiler: Qwik Start
+
+42> Fundamentals of Cloud Logging:
+	a> Setup and requirements installed (This web application generates logs for us to examine )
+	b> Deployed the application
+	c> Setting up the database and then again deploying the application
+	d> Viewing and searching logs (checking the logs and exploring the types of metrices)
+	e> using Filters to filter out the logs
+	f> Log based metrics (types of metrices)
+	g> Create a counter metric (setting up the filter> action > create Metric > after some steps the metric is created)
+	h> Create a distribution metric
+	i> View log metrics in the Cloud Monitoring Console
+	j> Audit logging (Google Cloud provides Auditing of all Google Cloud resources by default. The audit logs answer the question "Who did what, when?" Let's look at Audit Logging, starting by creating a new Compute Engine (Compute Engine) virtual machine (VM). Launching a VM is an example of an audited privileged activity, so it generates logs.)
+		we can check this in the activity tab and as well as in the logging tab.
+	k> Exporting logs (creating sink to a big querry database and then using the big querry databse to apply querry on it to retrieve important results).
+
+43> 
 
 
 
@@ -1099,4 +1119,17 @@ A list of entities found in your image, based on content from pages with similar
 
 171> Google Kubernetes Engine provides a managed environment for deploying, managing, and scaling your containerized applications using Google infrastructure. The environment Kubernetes Engine provides consists of multiple machines (specifically, Compute Engine instances) grouped together to form a cluster.
 Kubernetes provides the mechanisms through which you interact with your cluster. You use Kubernetes commands and resources to deploy and manage your applications, perform administration tasks and set policies, and monitor the health of your deployed workloads.
-172> 
+
+172> An App Engine app is a single application resource with one or more services. Each service can be configured to use different runtimes and to operate with different performance settings. Within each service, you can deploy versions of that service, and each then runs within one or more instances, depending on how much traffic you configured it to handle. For more information, see an overview of App Engine.
+	App Engine uses either a Standard or Flexible environment. A standard environment runs instances in a sandbox, limiting available CPU options and disc access.
+	In contrast, a flexible environment runs your application in Docker containers on Compute Engine virtual machines (VMs), which have fewer restrictions. For example, you can use the programming language or library of your choice, write to disk, and even run multiple processes. You also have the choice of Compute Engine machine types for your instances.
+
+173> Cloud Profiler is a statistical, low-overhead profiler that continuously gathers CPU usage and memory-allocation information from your production applications. It attributes that information to the application's source code, helping you identify the parts of the application consuming the most resources, and otherwise illuminating the performance characteristics of the code.
+
+174> Cloud Logging is part of the Operations suite of products in Google Cloud. It includes storage for logs, a user interface called the Logs Viewer, and an API to manage logs programmatically. Use Cloud Logging to read and write log entries, search and filter your logs, export your logs, and create logs-based metrics.
+175> Log-based metrics are Cloud Monitoring metrics based on the content of log entries. Therefore, your logs don't just sit around and wait for someone to notice problems; Cloud Monitoring automatically monitors the logs for events and information you define in monitoring metrics. Log-based metrics are also a great way to achieve monitoring of your custom applications. If your application can write logs to a VM's filesystem, you can build monitoring on top of them!
+	Cloud Logging provides two kinds of user-defined logs-based metrics - Counter and Distribution.
+176> Counter metrics: Counter metrics count the number of log entries matching an advanced logs filter. For example, a metric that counts log entries representing certain types of errors from specific resources. Want to be alerted if a lot of your website visitors are receiving HTTP 500 errors? Counter metrics can help.
+177> Distribution metrics: Distribution metrics accumulate numeric data from log entries matching a filter, and perform mathematical calculations against them. A common use for distribution metrics is to track latency patterns/trends over time. As each log entry is received, a latency value is extracted from the log entry and added to the distribution. At regular intervals, the accumulated distribution is written to Cloud Monitoring.
+178> Cloud Logging retains logs for 30 days, after which they are deleted. To retain logs longer, you should export them to another storage system, or "sink", such as BigQuery. Cloud Logging allows you to set up automated exporting jobs so that all logs will automatically be exported. Logs may then be further analyzed with the features of your chosen sink.
+
