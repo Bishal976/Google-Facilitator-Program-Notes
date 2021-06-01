@@ -762,9 +762,14 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 40> App Dev - Deploying the Application into App Engine Flexible Environment - Java (same concepts <just like docker>)
 	checkout (https://www.qwiklabs.com/focuses/1060?parent=catalog)
 
-41> Cloud Profiler: Qwik Start
+41> Cloud Profiler: Qwik Start (In this lab you will learn how to set up and use Stackdriver Profiler. First you'll download a sample Go program and run it with profiling enabled. Then you'll use the Cloud Profiler interface to explore the captured data.)
+	a> Enable Cloud Profiler API
+	b> Get a program to profile (This program is designed to to load the CPU as it runs, and configured to use Cloud Profiler. Cloud Profiler collects profiling data from the program as it runs and periodically saves it. Progress is indicated with a pair of messages:)
+	c> Profile the code <profiler_quickstart>
+	d> Start the Profiler interface by searching stackdriver profiler 
 
-42> Fundamentals of Cloud Logging:
+
+42> Fundamentals of Cloud Logging: 
 	a> Setup and requirements installed (This web application generates logs for us to examine )
 	b> Deployed the application
 	c> Setting up the database and then again deploying the application
@@ -778,9 +783,43 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 		we can check this in the activity tab and as well as in the logging tab.
 	k> Exporting logs (creating sink to a big querry database and then using the big querry databse to apply querry on it to retrieve important results).
 
-43> 
+43> Using BigQuery and Cloud Logging to Analyze BigQuery Usage:
+	a> Open BigQuery and create a dataset and run a querry on it "SELECT current_date"
+	b> Setup Log Export from Cloud Logging
+	c> Run example queries on google console so that we can generate enough logs to be displayed in the Big querry dataset
+	d> Viewing the logs in BigQuery
 
+44> Cloud Logging on Kubernetes Engine:
+	a>  In this lab you will deploy a sample application to Kubernetes Engine that forwards log events to Cloud Logging using Terraform, a declarative Infrastructure as Code tool that enables configuration files to automate the deployment and evolution of infrastructure in the cloud. The configuration will also create a Cloud Storage bucket and a BigQuery dataset for exporting log data to.
+	b> Architecture: (The Terraform configurations are going to build a Kubernetes Engine cluster that will generate logs and metrics that can be ingested by Stackdriver. The scripts will also build out Logging Export Sinks for Cloud Storage, BigQuery, and Cloud Pub/Sub)
+	c> Clone demo (clone the repo containing the application, terraform files and other dependencies) <the 3 terraform files are main.tf, provider.tf, variable.tf>
+	d> Deployment <make create> (this run the tf files)
+	e> Validation: <make validate> for checking what the terraform had performed
+	f> Logs in Cloud Logging: terraform did created some clusters which caused logs into the cloud logging dashboard
+	g> Viewing Log Exports
+	h> Logs in Cloud Storage: Log events can be stored in Cloud Storage, an object storage system suitable for archiving data
+	i> Logs in BigQuery
+	j> Teardown <make teardown> (Qwiklabs will take care of shutting down all the resources used for this lab, but here’s what you would need to do to clean up your own environment to save on cost and to be a good cloud citizen:)
 
+45> Monitoring and Logging for Cloud Functions:
+	a> Viewing Cloud Function logs & metrics in Cloud monitoring (create a cloud function )
+	b> Create logs-based metric (open logging (select <CloudFunction>helloWorld  and in logname check cloud-functions> and and run the querry)from action button create a distribution log based metrices)
+	c> Metrics Explorer: (set resource type to Executions and set some chars and see how it looks )
+	d> Create charts on the Monitoring Overview window: (then switch to Monitoring overview there add the chart with the same configuration.)
+
+46> Creating and Alerting on Logs-based Metrics:
+	a> Create resources for the lab
+	b> Monitor indexes
+	c> Prepare to install Cloud Monitoring
+	d> Additional resources for the lab (creating uptime check)
+	e> System defined and user defined logs-based metrics
+	f> User defined logs-based metrics
+	g> Labels and user defined metrics
+	h> Labels
+	i> Create the Foodcount alerting policy
+	j> Custom dashboard with heatmap
+
+47> 
 
 
 
@@ -1126,6 +1165,7 @@ Kubernetes provides the mechanisms through which you interact with your cluster.
 
 173> Cloud Profiler is a statistical, low-overhead profiler that continuously gathers CPU usage and memory-allocation information from your production applications. It attributes that information to the application's source code, helping you identify the parts of the application consuming the most resources, and otherwise illuminating the performance characteristics of the code.
 
+
 174> Cloud Logging is part of the Operations suite of products in Google Cloud. It includes storage for logs, a user interface called the Logs Viewer, and an API to manage logs programmatically. Use Cloud Logging to read and write log entries, search and filter your logs, export your logs, and create logs-based metrics.
 175> Log-based metrics are Cloud Monitoring metrics based on the content of log entries. Therefore, your logs don't just sit around and wait for someone to notice problems; Cloud Monitoring automatically monitors the logs for events and information you define in monitoring metrics. Log-based metrics are also a great way to achieve monitoring of your custom applications. If your application can write logs to a VM's filesystem, you can build monitoring on top of them!
 	Cloud Logging provides two kinds of user-defined logs-based metrics - Counter and Distribution.
@@ -1133,3 +1173,33 @@ Kubernetes provides the mechanisms through which you interact with your cluster.
 177> Distribution metrics: Distribution metrics accumulate numeric data from log entries matching a filter, and perform mathematical calculations against them. A common use for distribution metrics is to track latency patterns/trends over time. As each log entry is received, a latency value is extracted from the log entry and added to the distribution. At regular intervals, the accumulated distribution is written to Cloud Monitoring.
 178> Cloud Logging retains logs for 30 days, after which they are deleted. To retain logs longer, you should export them to another storage system, or "sink", such as BigQuery. Cloud Logging allows you to set up automated exporting jobs so that all logs will automatically be exported. Logs may then be further analyzed with the features of your chosen sink.
 
+179> Cloud Logging allows you to store, search, analyze, monitor, and alert on log data and events from the Google Cloud including BigQuery. Stackdriver also provides the ability to export certain logs to sinks such as Cloud Pub/Sub, Cloud Storage or BigQuery.
+
+180> Cloud Logging can be used aggregate logs from all Google Cloud resources, as well as any custom resources on other platforms, to allow for one centralized store for all logs and metrics. Logs are aggregated and then viewable within the provided Cloud Logging UI. They can also be exported to Sinks to support more specialized of use cases. Currently, Cloud Logging supports exporting to the following sinks:
+	# Cloud Storage
+	# Pub/Sub
+	# BigQuery
+181> The Terraform configurations are going to build a Kubernetes Engine cluster that will generate logs and metrics that can be ingested by Stackdriver. The scripts will also build out Logging Export Sinks for Cloud Storage, BigQuery, and Cloud Pub/Sub
+182> Following the principles of Infrastructure as Code and Immutable Infrastructure, Terraform supports the writing of declarative descriptions of the desired state of infrastructure. When the descriptor is applied, Terraform uses GCP APIs to provision and update resources to match. Terraform compares the desired state with the current state so incremental changes can be made without deleting everything and starting over. For instance, Terraform can build out GCP projects and compute instances, etc., even set up a Kubernetes Engine cluster and deploy applications to it. When requirements change, the descriptor can be updated and Terraform will adjust the cloud infrastructure accordingly.
+183> By default, Kubernetes Engine clusters in GCP are provisioned with a pre-configured Fluentd-based collector that forwards logs to Cloud Logging. Interacting with the sample app will produce logs that are visible in the Cloud Logging and other log event sinks.
+184> Log events can be stored in Cloud Storage, an object storage system suitable for archiving data. Policies can be configured for Cloud Storage buckets that, for instance, allow aging data to expire and be deleted while more recent data can be stored with a variety of storage classes affecting price and availability.
+185> make teardown: Qwiklabs will take care of shutting down all the resources used for this lab, but here’s what you would need to do to clean up your own environment to save on cost and to be a good cloud citizen:
+
+186> Logs-based metrics are Cloud Monitoring metrics that are based on the content of log entries. It can help you identify trends, extract numeric values out of the logs, and set up an alert when a certain log entry occurs by creating a metric for that event. You can use both system and user-defined logs-based metrics in Cloud Monitoring to create charts and alerting policies. Logs-based metrics are time series that are generated from data in logs
+187> The Cloud Monitoring agent is a collectd-based daemon that gathers system and application metrics from virtual machine instances and sends them to Monitoring. By default, the Monitoring agent collects disk, CPU, network, and process metrics. Configuring the Monitoring agent allows third-party applications to get the full list of agent metrics.
+188> The Cloud Logging agent streams logs from your VM instances and from selected third-party software packages to Cloud Logging. It is a best practice to run the Cloud Logging agent on all your VM instances
+189> System defined logs-based metrics are ready to use right out of the box.These system logs-based metrics include:
+Metrics around logs ingested
+	# Byte_count: Number of bytes in all log entries ingested. This is broken down by monitored resource type, log stream name, and severity level.
+Metrics around logs excluded
+	# Excluded_byte_count: Number of bytes in log entries that were excluded. This is broken down by the monitored resource type.
+	# Excluded_log_entry_count: Number of log entries that were excluded. This is broken down by the monitored resource type.
+Metrics around logs based metrics
+	# Dropped_log_entry_count: Despite the name, this does not show log entries dropped by Cloud logging but rather the number of log entries that did not contribute to logs based metrics because they arrived too late.
+Log_entry_count: Number of log entries that contributed to logs based metrics so that dropped_log_entry_count + log_entry_count is the total number of log entries ingested by Cloud Logging.
+	# Metric_throttled: Indicates if points are being dropped for logs-based metrics due to exceeding time series limits.
+	# Time_series_count: Estimate of the active time series count for logs-based metrics.
+190> Most system logs-based metrics are counter metrics. Counter metrics count the number of log entries that match an advanced logs filter.
+191> Labels allow logs-based metrics to contain multiple time series — one for each label value. All logs-based metrics come with some default labels.
+192> User defined labels can be created when you create a metric. An extractor expression is required for each configured label to tell Cloud Logging how to extract values from logs and place them as the labels' value. You cannot add labels to system logs-based metrics.
+193> 
