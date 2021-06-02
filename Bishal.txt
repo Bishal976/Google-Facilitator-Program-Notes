@@ -820,16 +820,15 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	j> Custom dashboard with heatmap
 
 47> Deploy Your Website on Cloud Run: 
-	a>Environment Setup
-Clone Source Repository
-Create Docker Container with Cloud Build
-Deploy Container To Cloud Run
-Create new revision with lower concurrency
-Make Changes To The Website
-Update website with zero downtime
-Cleanup
-Congratulations!
-End your lab
+	a>Environment Setup (clone the file, run startup.sh and then npm start)
+	b> Create Docker Container with Cloud Build (stores in cloud storage, makes dockerfile, runs to create image and pushes to cloud repository)
+	c> Deploy Container To Cloud Run 
+	d> Make Changes To The Website(Create new revision with lower concurrency)
+	e> Update website with zero downtime
+	f> Cleanup
+
+48> Hosting a Web App on Google Cloud Using Compute Engine:
+	a> 
 
 
 
