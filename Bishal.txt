@@ -819,7 +819,36 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	i> Create the Foodcount alerting policy
 	j> Custom dashboard with heatmap
 
-47> 
+47> Deploy Your Website on Cloud Run: 
+	a>Environment Setup
+Clone Source Repository
+Create Docker Container with Cloud Build
+Deploy Container To Cloud Run
+Create new revision with lower concurrency
+Make Changes To The Website
+Update website with zero downtime
+Cleanup
+Congratulations!
+End your lab
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1202,4 +1231,16 @@ Log_entry_count: Number of log entries that contributed to logs based metrics so
 190> Most system logs-based metrics are counter metrics. Counter metrics count the number of log entries that match an advanced logs filter.
 191> Labels allow logs-based metrics to contain multiple time series — one for each label value. All logs-based metrics come with some default labels.
 192> User defined labels can be created when you create a metric. An extractor expression is required for each configured label to tell Cloud Logging how to extract values from logs and place them as the labels' value. You cannot add labels to system logs-based metrics.
-193> 
+
+193> With Cloud Run, Google Cloud's implementation of Google's KNative framework, you can manage and deploy your website without any of the infrastructure overhead you experience with a VM or pure Kubernetes-based deployments. Not only is this a simpler approach from a management perspective, it also gives you the ability to "scale to zero" when there are no requests coming into your website.
+194> Cloud Run brings "serverless" development to containers and can be run either on your own Google Kubernetes Engine (GKE) clusters or on a fully managed PaaS solution provided by Cloud Run.
+195> Normally you would have to take a two step approach that entails building a docker container and pushing it to a registry to store the image for GKE to pull from. Make life easier and use Cloud Build to build the Docker container and put the image in Container Registry with a single command! To view the manual process of creating a Docker file and pushing it, go here.
+196> Cloud Build will compress the files from the directory and move them to a Cloud Storage bucket. The build process will then take all the files from the bucket and use the Dockerfile, which is present in the same directory, to run the Docker build process. Since you specified the --tag flag with the host as gcr.io for the Docker image, the resulting Docker image will be pushed to Container Registry.
+197> There are two approaches for deploying to Cloud Run:
+	# Managed Cloud Run: The Platform as a Service model where all container lifecycle is managed by the Cloud Run product itself. You'll be using this approach in this lab.
+	# Cloud Run on GKE: Cloud Run with an additional layer of control which allows you to bring your own clusters & pods from GKE. You can read more about it here.
+198> You will deploy the image that was built earlier by the cloud build, and choose the managed version of *Cloud Run* by specifying --platform managed.
+199> By default, a Cloud Run application will have a concurrency value of 80, meaning that each container instance will serve up to 80 requests at a time. This is a big departure from the Functions-as-a-Service model, where one instance handles one request at a time.
+200> Cloud Run treats each deployment as a new Revision which will first be brought online, then have traffic redirected to it. By default the latest revision will be assigned 100% of the inbound traffic for a service. It is possible to use "Routes" to allocate different percentages of traffic to different revisions within a service.
+
+201> 
