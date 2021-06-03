@@ -867,7 +867,17 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	a> Create an instance using the console
 	b> Create an instance using CLI
 	
-52> 
+52> Datastore: Qwik Start: 
+
+53> In this lab you will learn how to create and connect to a Google Cloud SQL MySQL instance and perform basic SQL operations using the Cloud Console and the mysql client.
+
+54> Data Loss Prevention: Qwik Start - Command Line
+	a> clone the github repo containing the DLP api
+	b> install dependencies (npm install --save @google-cloud/dlp          npm install yargs)
+	c> cd nodejs-dlp/samples
+	d> code for inspecting a sample string:   node inspectString.js $DEVSHELL_PROJECT_ID "My email address is joe@example.com." LIKELY 0 EMAIL_ADDRESS DICT_TYPE true
+
+55> 
 
 
 
@@ -1330,4 +1340,8 @@ Google Cloud offers many different types of load balancers. For this lab you use
 	# You need support for Docker containers or Kubernetes with minimal setup.
 	# You need an operating system that has a small footprint and is security hardened for containers.
 	# You need an operating system that is tested and verified for running Kubernetes on your Compute Engine instances.
-228> 
+
+228> The location applies to both Cloud Datastore and App Engine for your Google Cloud project. You cannot change the location after it has been saved.
+
+229> The Data Loss Prevention API provides programmatic access to a powerful detection engine for personally identifiable information (PII) and other privacy-sensitive data in unstructured data streams.
+230> The DLP API provides fast, scalable classification and optional redaction for sensitive data elements like credit card numbers, names, social security numbers, passport numbers, and phone numbers. The API supports text and images – just send data to the API or specify data stored on your Cloud Storage, BigQuery, and Cloud Datastore instances.
