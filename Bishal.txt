@@ -894,8 +894,14 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 59> APIs Explorer: Cloud Storage:
 	a> in api's explorer you can click on <learn more > and then from there you can try to test the api
 
-60> APIs Explorer: Create and Update a Cluster:
-	a> 
+60> APIs Explorer: Create and Update a Cluster: (Cloud Dataproc API is used here in this lab)
+	
+61> APIs Explorer: Compute Engine: You can create an instance using gcloud shell, google cloud console and through APIs Explorer.
+
+62> APIs Explorer: App Engine:
+	
+63> APIs Explorer: Cloud SQL: 
+	
 
 
 
@@ -1386,3 +1392,9 @@ Google Cloud offers many different types of load balancers. For this lab you use
 
 240> Cloud Storage allows world-wide storage and retrieval of any amount of data at any time. You can use Cloud Storage for a range of scenarios including serving website content, storing data for archival and disaster recovery, or distributing large data objects to users via direct download.
 
+241> The APIs Explorer enables you to construct REST-based API calls against any version of any Google service. In this lab, you'll use API Explorer to create (insert) a Compute Engine instance with the Compute Engine API and then use Cloud Monitoring to monitor CPU usage.
+
+242> App Engine lets you deploy applications on a fully managed platform. You can scale your applications seamlessly without having to worry about managing the underlying infrastructure. With zero server management and zero configuration deployments, developers can focus only on building great applications without the management overhead.
+
+243> Cloud SQL is a fully-managed database service that makes it easy to set up, maintain, manage, and administer your relational PostgreSQL and MySQL databases in the cloud. Cloud SQL offers high performance, scalability, and convenience. Hosted on Google Cloud, Cloud SQL provides a database infrastructure for applications running anywhere.
+244> 
