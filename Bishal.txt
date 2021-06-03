@@ -908,11 +908,17 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	e> Inspect your updated database
 	f> Delete your database
 
-64> 
+64> APIs Explorer: PubSub and IoT:
+	a> Download the Sample Code
+	b> Create a Pub/Sub Topic
+	c> Create a Pub/Sub Subscription
+	d> View the topic and subscription in the Console
+	e> Create an IoT Registry
+	f> Generate RSA keys and create a device : we generate RSA public and private keys that will be used for authenticating your virtual device when it connects.
+	g> Start the Virtual Server
+	h> Start the Virtual Device and Observe
 
-
-
-
+65> 
 
 
 
@@ -1406,4 +1412,7 @@ Google Cloud offers many different types of load balancers. For this lab you use
 
 243> Cloud SQL is a fully-managed database service that makes it easy to set up, maintain, manage, and administer your relational PostgreSQL and MySQL databases in the cloud. Cloud SQL offers high performance, scalability, and convenience. Hosted on Google Cloud, Cloud SQL provides a database infrastructure for applications running anywhere.
 
-244> 
+244> Cloud IoT Core is a fully managed service that allows you to easily and securely connect, manage, and ingest data from millions of globally dispersed devices. In this lab you'll build a simple but complete IoT system using Cloud IoT Core and Pub/Sub.
+245> The devices in this system publish temperature data to their telemetry feeds, and a server consumes the telemetry data from a Cloud Pub/Sub topic. The server then decides whether to turn on or off the individual devices' fans, via a Cloud IoT Core configuration update. The device will respond to configuration changes from a server based on real-time data.
+
+246> 
