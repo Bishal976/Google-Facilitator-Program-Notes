@@ -877,7 +877,13 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	c> cd nodejs-dlp/samples
 	d> code for inspecting a sample string:   node inspectString.js $DEVSHELL_PROJECT_ID "My email address is joe@example.com." LIKELY 0 EMAIL_ADDRESS DICT_TYPE true
 
-55> 
+55> Video Intelligence: Qwik Start:
+	
+56> Cloud Security Scanner: Qwik Start
+
+57> Cloud Endpoints: Qwik Start
+
+
 
 
 
@@ -1345,3 +1351,10 @@ Google Cloud offers many different types of load balancers. For this lab you use
 
 229> The Data Loss Prevention API provides programmatic access to a powerful detection engine for personally identifiable information (PII) and other privacy-sensitive data in unstructured data streams.
 230> The DLP API provides fast, scalable classification and optional redaction for sensitive data elements like credit card numbers, names, social security numbers, passport numbers, and phone numbers. The API supports text and images – just send data to the API or specify data stored on your Cloud Storage, BigQuery, and Cloud Datastore instances.
+
+231> Google Cloud Video Intelligence makes videos searchable and discoverable by extracting metadata with an easy to use REST API. You can now search every moment of every video file in your catalog. It quickly annotates videos stored in Cloud Storage, and helps you identify key entities (nouns) within your video; and when they occur within the video. Separate signal from noise by retrieving relevant information within the entire video, shot-by-shot, -or per frame.
+
+232> The Cloud Security Scanner identifies security vulnerabilities in your Google App Engine web applications. It crawls your application, following all links within the scope of your starting URLs, and attempts to exercise as many user inputs and event handlers as possible.
+233> The scanner is designed to complement your existing secure design and development processes. To avoid distracting developers with false positives, the scanner errs on the side of under reporting and will not display low confidence alerts. It does not replace a manual security review, and it does not guarantee that your application is free from security flaws.
+
+234> 
