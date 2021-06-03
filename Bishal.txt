@@ -827,7 +827,7 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	e> Update website with zero downtime
 	f> Cleanup
 
-48> Hosting a Web App on Google Cloud Using Compute Engine:
+48> Hosting a Web App on Google Cloud Using Compute Engine: (https://youtu.be/nnXi0ABwSXA)
 	a> Environment Setup (Enabling compute engine api)
 	b> Create Cloud Storage bucket
 	c> Clone source repository(clone, cd, run setup.sh file, then run npm )
@@ -863,7 +863,11 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	f> Migrate frontend to microservice: same as above
 	g> finally deleting the old monolith as we have completed deployment of the microservices.
 
-51> 
+51> Container optimized OS: Qwik start
+	a> Create an instance using the console
+	b> Create an instance using CLI
+	
+52> 
 
 
 
@@ -1264,7 +1268,7 @@ Log_entry_count: Number of log entries that contributed to logs based metrics so
 
 193> With Cloud Run, Google Cloud's implementation of Google's KNative framework, you can manage and deploy your website without any of the infrastructure overhead you experience with a VM or pure Kubernetes-based deployments. Not only is this a simpler approach from a management perspective, it also gives you the ability to "scale to zero" when there are no requests coming into your website.
 194> Cloud Run brings "serverless" development to containers and can be run either on your own Google Kubernetes Engine (GKE) clusters or on a fully managed PaaS solution provided by Cloud Run.
-195> Normally you would have to take a two step approach that entails building a docker container and pushing it to a registry to store the image for GKE to pull from. Make life easier and use Cloud Build to build the Docker container and put the image in Container Registry with a single command! To view the manual process of creating a Docker file and pushing it, go here.
+195> Normally you would have to take a two step approach that entails building a docker container and pushing it to a registry to store the image for GKE to pull from. Make life easier and use Cloud Build to build the Docker container and put the image in Container Registry with a single command! 
 196> Cloud Build will compress the files from the directory and move them to a Cloud Storage bucket. The build process will then take all the files from the bucket and use the Dockerfile, which is present in the same directory, to run the Docker build process. Since you specified the --tag flag with the host as gcr.io for the Docker image, the resulting Docker image will be pushed to Container Registry.
 197> There are two approaches for deploying to Cloud Run:
 	# Managed Cloud Run: The Platform as a Service model where all container lifecycle is managed by the Cloud Run product itself. You'll be using this approach in this lab.
@@ -1311,4 +1315,19 @@ Google Cloud offers many different types of load balancers. For this lab you use
 	# The behavior of your system isn't caused by a single service, but by many of them and by their interactions. Because of this, understanding how your system behaves in production (its observability) is harder. Istio is a solution to this problem as well.
 219>  By default, the containers you run on GKE are not accessible from the Internet, because they do not have external IP addresses. You must explicitly expose your application to traffic from the Internet via a Service resource. A Service provides networking and IP support to your application's Pods. GKE creates an external IP and a Load Balancer ( subject to billing) for your application.
 
-220> 
+220>  install Cloud SDK to a virtual machine, initialize it and run core gcloud commands from the command-line. The Cloud SDK RPM packages are supported for Red Hat Enterprise Level 7 and CentOS 7.
+221> The Cloud SDK RPM packages are supported for Red Hat Enterprise Level 7 and CentOS 7. They may also work on Fedora systems using yum or dnf, but this has not been tested.
+222> gcloud init command in the ssh is used to perform several common SDK setup tasks. These include authorizing the SDK tools to access Google Cloud using your user account credentials and setting up the default SDK
+
+223> Container-Optimized OS is an operating system image for your Compute Engine VMs that is optimized for running Docker containers, and is Google's recommended OS for running containers on Google Cloud. 
+224> Since it comes with all container-related dependencies preinstalled, Container-Optimized OS allows your cluster to quickly scale up or down in response to traffic or workload changes, optimizing your spend and improving your reliability.
+225> Container-Optimized OS powers many Google Cloud services such as Kubernetes Engine and Cloud SQL, making it Google's go-to solution for container workloads.
+226> Run Containers Out of the Box: Container-Optimized OS instances come pre-installed with the Docker runtime and cloud-init. With a Container-Optimized OS instance, you can bring up your Docker container at the same time you create your VM, with no on-host setup required.
+	# Smaller attack surface: Container-Optimized OS has a smaller footprint, reducing your instance's potential attack surface.
+	# Locked-down by default: Container-Optimized OS instances include a locked-down firewall and other security settings by default.
+	# Automatic Updates: Container-Optimized OS instances are configured to automatically download weekly updates in the background; only a reboot is necessary to use the latest updates.
+227> Container-Optimized OS can be used to run most Docker containers. You should consider using Container-Optimized OS as the operating system for your Compute Engine instance if you have the following needs:
+	# You need support for Docker containers or Kubernetes with minimal setup.
+	# You need an operating system that has a small footprint and is security hardened for containers.
+	# You need an operating system that is tested and verified for running Kubernetes on your Compute Engine instances.
+228> 
