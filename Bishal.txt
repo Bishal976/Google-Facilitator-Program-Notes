@@ -901,7 +901,15 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 62> APIs Explorer: App Engine:
 	
 63> APIs Explorer: Cloud SQL: 
-	
+	a> Build a Cloud SQL instance with instances.insert
+	b> Create a database with databases.insert
+	c> Create a table in your MySQL database and upload a CSV file to a Cloud Storage Bucket (after creating a table, in other terminal create a csv file containing the data to be uploaded in the table and then via an api call imprt that data of csv file into the table)
+	d> Add a CSV file to your database using instances.
+	e> Inspect your updated database
+	f> Delete your database
+
+64> 
+
 
 
 
@@ -1397,4 +1405,5 @@ Google Cloud offers many different types of load balancers. For this lab you use
 242> App Engine lets you deploy applications on a fully managed platform. You can scale your applications seamlessly without having to worry about managing the underlying infrastructure. With zero server management and zero configuration deployments, developers can focus only on building great applications without the management overhead.
 
 243> Cloud SQL is a fully-managed database service that makes it easy to set up, maintain, manage, and administer your relational PostgreSQL and MySQL databases in the cloud. Cloud SQL offers high performance, scalability, and convenience. Hosted on Google Cloud, Cloud SQL provides a database infrastructure for applications running anywhere.
+
 244> 
