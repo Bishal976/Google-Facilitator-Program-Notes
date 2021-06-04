@@ -918,9 +918,18 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	g> Start the Virtual Server
 	h> Start the Virtual Device and Observe
 
-65> 
+65> Internet of Things: Qwik Start:
+	a> Create a Pub/Sub Topic
+	b> Create a device registry
+	c> Add a device to the registry
+	d> Add a public key to the device
+	e> Run a Node.js sample to connect a virtual device and view telemetry
+	
+66> Streaming IoT Data to Cloud Storage
+	Before we perform anything it's important to notice that here we are using an instance as a sencor, which is sending data to the registry on the cloud due to the programs installed on it. along with the gcloud shell.
+	a> sensor/machine with rsa key --> Device with RSA Keys on cloud --> registory --> Pub/sub --> Dataflow --> cloud storage
 
-
+67> 
 
 
 
@@ -1427,4 +1436,9 @@ Google Cloud offers many different types of load balancers. For this lab you use
 	# A device manager for registering devices with the service, so you can then monitor and configure them.
 	# Two protocol bridges (MQTT and HTTP) that devices can use to connect to Google Cloud.
 255> Device telemetry data is forwarded to a Cloud Pub/Sub topic, which can then be used to trigger Cloud Functions. You can also perform streaming analysis with Cloud Dataflow or custom analysis with your own subscribers.
+
+256> Cloud IoT Core supports two protocols for device connection and communication: HTTP & MQTT
+257> 
+
+ 
 
