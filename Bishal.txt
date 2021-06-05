@@ -929,9 +929,21 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	Before we perform anything it's important to notice that here we are using an instance as a sencor, which is sending data to the registry on the cloud due to the programs installed on it. along with the gcloud shell.
 	a> sensor/machine with rsa key --> Device with RSA Keys on cloud --> registory --> Pub/sub --> Dataflow --> cloud storage
 
-67> 
+67> Building an IoT Analytics Pipeline on Google Cloud: through codes not from console ***
+	a> Ensure that the Dataflow API is successfully enabled
+	b> Create a Cloud Pub/Sub topic
+	c> Create a BigQuery dataset: for storing the data received 
+	d> Create a cloud storage bucket: this is for temp
+	e> Set up a Cloud Dataflow Pipeline: for collecting data from the pub/sub to the BigQuerry dataset
+	f> Prepare your compute engine VM: for supplying data 
+	g> Create a registry for IoT devices: contains the device name the keys to connect to the sensors
+	h> Create a Cryptographic Keypair: is created from the vm instance for connecting to the Cloud core
+	i> Add simulated devices to the registry
+	j> Run simulated devices
+	k> Analyze the Sensor Data Using BigQuery
 
-
+68> 
+	
 
 
 
@@ -1438,7 +1450,12 @@ Google Cloud offers many different types of load balancers. For this lab you use
 255> Device telemetry data is forwarded to a Cloud Pub/Sub topic, which can then be used to trigger Cloud Functions. You can also perform streaming analysis with Cloud Dataflow or custom analysis with your own subscribers.
 
 256> Cloud IoT Core supports two protocols for device connection and communication: HTTP & MQTT
-257> 
+
+257> Cloud IoT Core has two main components:
+	# A device manager for registering devices with the service, so you can then monitor and configure them.
+	# A protocol bridge that supports MQTT, which devices can use to connect to Google Cloud.
+
+258> 
 
  
 
