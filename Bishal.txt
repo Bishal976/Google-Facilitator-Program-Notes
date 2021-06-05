@@ -942,8 +942,13 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 	j> Run simulated devices
 	k> Analyze the Sensor Data Using BigQuery
 
-68> 
-	
+68> Using Firestore with Cloud IoT Core for Device Configuration:
+	a> This command can directly store the project id to a variable: export GCLOUD_PROJECT=$(gcloud config list project --format "value(core.project)")
+
+69> The Apps Script CLI - clasp: same like git operates.
+
+70> Hangouts Chat bot - Apps Script:
+ 
 
 
 
@@ -1455,7 +1460,44 @@ Google Cloud offers many different types of load balancers. For this lab you use
 	# A device manager for registering devices with the service, so you can then monitor and configure them.
 	# A protocol bridge that supports MQTT, which devices can use to connect to Google Cloud.
 
-258> 
+258> Cloud IoT Core provides a way to send configuration to devices over MQTT or HTTP. The structure of this payload is unspecified and delivered as raw bytes. This means that if you have different parts of your IoT system wanting to write parts of the configuration, each has to parse, patch, then re-write the configuration value in IoT Core.
+259> If you want a payload delivered to a device in a binary format, such as CBOR, that means each of these participating components of your system also need to deserialize and re-serialize the structured data.
+260> By using Cloud Firestore to serve as a layer in between the systems that update a device's configuration and IoT Core, you can take advantage of Firestore's structured data types and partial document updates.
+261> Sometimes, with constrained devices and constrained networks, you want to work with data in a compact binary format. Concise Binary Object Representation CBOR is a binary format that strikes a balance between the compactness of binary with the self-describing format of JSON. IoT Core device configuration API and MQTT both fully support binary messages.
+262> When the data is encoded as CBOR you will not be able to see or edit this in the IoT Core console, as it is in a compact encoded format that the console does not parse for display. The following is a visual representation of the CBOR pipeline:
 
- 
+263> Gmail add-ons automate tasks within Gmail, saving time and effort for users. Gmail add-ons can examine incoming messages, then act on these messages in various ways, such as:
+	# Displaying additional information for the user in the Gmail UI.
+	# Connecting to non-Google services, to retrieve information or take other actions.
+	# Providing an interactive interface to allow the user to control the add-on or send information to another service.
+264> Apps Script places the project file in your Drive root folder so you can find it later.
 
+265> Google Apps Script has a development environment that may be different from what you're used to. With Apps Script, you:
+	# Develop in a browser-based code editor but can choose to develop locally if using clasp, the command-line deployment tool for Apps Script
+	# Code in a specialized version of JavaScript customized to access G Suite, and other Google or external services (URLfetch, JDBC, etc.)
+	# Safely ignore writing authorization code because Apps Script handles it for you
+	# Do not host your app—it lives and runs on Google servers in the cloud
+266> Apps Script applications come in one of two forms:
+	# Bound—meaning it's forever, and only tied to one Google document (Doc, Sheet, Slide, Site, or Form)
+	# Standalone—an independent script not tied to any G Suite documents
+Bound and Standalone apps can also be published to expose more broadly:
+
+Not published—remains private, accessible only to project owners
+Published as an add-on—your app can be installed from the add-on store
+Published as web app—your app handles HTTP requests and has web UI components
+Embedded in Google Sites—published web apps can be embedded in either the new Sites or classic Sites pages
+Published as an API executable—your app can be accessed through the Execution API
+Some valid combination of the above
+
+267>  Features of Clasp:
+	# Develop Locally. clasp lets you write code on your own computer and upload it to Apps Script when you're done. You can also download existing Apps Script projects and then edit them locally. Once the code is local, you can use your favorite development tools like git to work on Apps Script projects.
+	# Manage Deployment Versions. Create, update, and view multiple deployments of your project.
+	# Structure Code. clasp automatically converts your flat project on script.google.com into folders. Example (do not copy):
+268> clasp push replaces code that is on script.google.com and clasp pull replaces all files locally. For this reason, follow these guidelines:
+	# Do not concurrently edit code locally and on script.google.com.
+	# Use a version control system, like git.
+269> clasp allows you to manage versions and deployments. First, some vocabulary:
+	# Version: A "snapshot" of a script project. A version can be considered a read-only branch used for deployments.
+	# Deployment: A published release of a script project (often as an add-on or web app). Requires a version number.
+
+270> 
