@@ -955,7 +955,18 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-73> 
+73> Dataprep: Qwik Start:
+
+74> Dataflow: Qwik Start - Templates:
+	a> bq mk taxirides: this creates a big querry dataset
+
+75> Dataproc: Qwik Start - Console
+
+76> Reinforcement Learning: Qwik Start:
+
+//Further labs are just the implementations of the above steps in different different ways!
+//so i have stoped this lab wise steps notes,
+//but i have completed the notes for those quests and labs which are given below!
 
 
 
@@ -1508,8 +1519,23 @@ Some valid combination of the above
 	# Deployment: A published release of a script project (often as an add-on or web app). Requires a version number.
 
 270>  nodemon is used to automatically reload the application whenever you change a source file. This means that you shouldn't need to stop and restart the server after each step.
-271> 
 
+271> Cloud Dataprep by Trifacta is an intelligent data service for visually exploring, cleaning, and preparing data for analysis. Cloud Dataprep is serverless and works at any scale. There is no infrastructure to deploy or manage. Easy data preparation with clicks and no code!
+272> The Transformer page is where you build your transformation recipe and see the results applied to the sample. When you are satisfied with what you see, execute the job against your dataset.
+
+273> Cloud Dataproc is a fast, easy-to-use, fully-managed cloud service for running Apache Spark and Apache Hadoop clusters in a simpler, more cost-efficient way. Operations that used to take hours or days take seconds or minutes instead. Create Cloud Dataproc clusters quickly and resize them at any time, so you don't have to worry about your data pipelines outgrowing your clusters.
+
+274> Like many other areas of machine learning research, reinforcement learning (RL) is evolving at breakneck speed. Just as they have done in other research areas, researchers are leveraging deep learning to achieve state-of-the-art results.
+	In particular, reinforcement learning has significantly outperformed prior ML techniques in game playing, reaching human-level and even world-best performance on Atari, beating the human Go champion, and is showing promising results in more difficult games like Starcraft II.
+
+275> Cloud natural language api:
+	# Syntax Analysis: Extract tokens and sentences, identify parts of speech (PoS) and create dependency parse trees for each sentence.
+	# Entity Recognition: Identify entities and label by types such as person, organization, location, events, products and media.
+	# Sentiment Analysis: Understand the overall sentiment expressed in a block of text.
+	# Content Classification: Classify documents in predefined 700+ categories.
+	# Multi-Language: Enables you to easily analyze text in multiple languages including English, Spanish, Japanese, Chinese (Simplified and Traditional), French, German, Italian, Korean and Portuguese.
+	# Integrated REST API: Access via REST API. Text can be uploaded in the request or integrated with Cloud Storage.
+276> 
 
 
 
