@@ -968,19 +968,6 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &				--> setup port forwar
 //so i have stoped this lab wise steps notes,
 //but i have completed the notes for those quests and labs which are given below!
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 Terminologies: 
  The "Qwiklabs Resources" project contains files, datasets, and machine images for certain labs and can be accessed from every Google Cloud lab environment. It's important to note that "Qwiklabs Resources" is shared (read only) with all Qwiklabs users, which means that you cannot delete or modify it.
@@ -1535,9 +1522,17 @@ Some valid combination of the above
 	# Content Classification: Classify documents in predefined 700+ categories.
 	# Multi-Language: Enables you to easily analyze text in multiple languages including English, Spanish, Japanese, Chinese (Simplified and Traditional), French, German, Italian, Korean and Portuguese.
 	# Integrated REST API: Access via REST API. Text can be uploaded in the request or integrated with Cloud Storage.
-276> 
 
+276> BigQuery public datasets are not displayed by default in the BigQuery web UI. To open the public datasets project, open https://console.cloud.google.com/bigquery?project=data-to-insights&page=ecommerce in a new browser window.
 
+277> Google Data Studio turns your data into informative dashboards and reports that are easy to read, easy to share, and fully customizable. Dashboarding allows you to tell great data stories to support better business decisions.
+278> BigQuery is Google's fully managed, NoOps, low cost analytics database. With BigQuery you can query terabytes and terabytes of data without having any infrastructure to manage or needing a database administrator. BigQuery uses SQL and can take advantage of the pay-as-you-go model. BigQuery allows you to focus on analyzing data to find meaningful insights.
+
+279> BigQuery Machine Learning (BQML, product in beta) enables users to create and execute machine learning models in BigQuery using SQL queries. The goal is to democratise machine learning by enabling SQL practitioners to build models using their existing tools and to increase development speed by eliminating the need for data movement.
+
+280> The end goal of this lab is to predict the winner of a given NCAA Men's basketball match-up using past knowledge of historical games. In machine learning, each column of data that will help us determine the outcome (win or loss for a tournament game) is called a feature.
+281> The column of data that you are trying to predict is called the label. Machine learning models "learn" the association between features to predict the outcome of a label.
+282> 
 
 
 
