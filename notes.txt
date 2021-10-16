@@ -1539,7 +1539,15 @@ Some valid combination of the above
 
 • Dedicated game servers are stateful applications that retain the full game simulation in memory. Unlike other stateful applications, like databases, they have a short lifetime. A dedicated game server runs for a few minutes or hours. Load Balancers are not present in the connection of game servers as they increases the latency.
 
-
+283> Block.one: Getting started with the EOSIO Blockchain
+• All concept same as normal blockchain.
+•  Block production and block validation are performed by special nodes called Block Producers.
+•  Consensus is the way for such distributed nodes and users to agree upon the current state of the blockchain. Two of the most common consensus models used in blockchains are Proof of Work (PoW) and Proof of Stake (PoS).
+• In Proof of Stake, nodes that own the largest stake or percentage of some asset have equivalent decision power. One interesting variant is Delegated Proof-of-Stake (DPoS) in which a large number of participants or stakeholders elect a smaller number of delegates, which in turn make decisions for them. EOSIO uses Delegated Proof of Stake (DPoS) to elect the active producers who will then be authorized to produce blocks, validate them, and sign them to eventually be added to the blockchain.
+• Keys in EOSIO are binary strings represented in Base58 used for signing and verification of transactions, blocks, and other messages. Keys are created within a digital wallet associated with an account. 
+Since account ownership is defined solely by the account name, the keys associated with an account can be updated without compromising security. 
+•  A novel permission scheme involving accounts, permissions, and authority tables determine what accounts can do and how the actions that make a transaction are authorized. To that end, each account is assigned a hierarchical permission structure and each permission is assigned a pair of public and private keys used for signing and verification.
+Every new EOSIO blockchain has a default system user called eosio. This account is used initially to set up the blockchain.
 
 
 
