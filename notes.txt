@@ -1534,7 +1534,10 @@ Some valid combination of the above
 
 280> The end goal of this lab is to predict the winner of a given NCAA Men's basketball match-up using past knowledge of historical games. In machine learning, each column of data that will help us determine the outcome (win or loss for a tournament game) is called a feature.
 281> The column of data that you are trying to predict is called the label. Machine learning models "learn" the association between features to predict the outcome of a label.
-282> 
+282> Using Agones to easily create scalable Game servers 
+•  Agones (Greek for "contest" or "gathering") is a new open-source project that uses Kubernetes to host and scale dedicated game servers. Agones is designed as a batteries-included, open-source, dedicated game server hosting and scaling project built on top of Kubernetes, with the flexibility you need to tailor it to the needs of your multiplayer game.
+
+• Dedicated game servers are stateful applications that retain the full game simulation in memory. Unlike other stateful applications, like databases, they have a short lifetime. A dedicated game server runs for a few minutes or hours. Load Balancers are not present in the connection of game servers as they increases the latency.
 
 
 
@@ -1542,5 +1545,3 @@ Some valid combination of the above
 
 
 =======
-171> 
->>>>>>> 5a83d895e4b938fdbc775960beba5246a3abae38:notes.txt
