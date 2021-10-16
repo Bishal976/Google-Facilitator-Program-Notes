@@ -189,7 +189,7 @@ console.log(`My Cloud Function: ${name}`);
 	g> DATA=$(printf 'Hello World!'|base64) && gcloud functions call helloWorld --data '{"data":"'$DATA'"}'         --> Testing the function
 	i> gcloud functions logs read helloWorld                             --> the logs to chcek the output
 
-12> 	Google Cloud Pub/Sub: Qwik Start - Command Line:
+12> Google Cloud Pub/Sub: Qwik Start - Command Line:
 	a> gcloud pubsub topics create myTopic                               --> creates a topic named myTopic
 	b> gcloud pubsub topics list                        		     --> lists out all the topics created
 	c> gcloud pubsub topics delete myTopic	        		     --> deletes the topic myTopic
@@ -1388,7 +1388,8 @@ Google Cloud offers many different types of load balancers. For this lab you use
 	# They can be managed by different teams. The boundary between microservices makes it easier to dedicate a team to one or several microservices.
 	# By moving to microservices, you loosen the dependencies between the teams. Each team has to care only about the APIs of the microservices they are dependent on. The team doesn't need to think about how those microservices are implemented, about their release cycles, and so on.
  	# You can more easily design for failure. By having clear boundaries between services, it's easier to determine what to do if a service is down.
-	# Some of the disadvantages when compared to monoliths are:
+	
+# Some of the disadvantages when compared to monoliths are:
 
  	# Because a microservice-based app is a network of different services that often interact in ways that are not obvious, the overall complexity of the system tends to grow.
 	# Unlike the internals of a monolith, microservices communicate over a network. In some circumstances, this can be seen as a security concern. Istio solves this problem by automatically encrypting the traffic between microservices.
