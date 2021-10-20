@@ -1616,4 +1616,12 @@ Contexts represent the current context of a user's request. This is helpful for 
 For example, if a user is listening to music and finds a band that catches their interest, they might say something like: "I want to hear more of them". As a developer, you can include the name of the band in the context with the request, so that the agent can use it in other intents.
 Fulfillment is a webhook that allows you to pass information from a matched intent into a web service and get a result from it.
 All of this new information may be overwhelming, but not to panic — it should all come together once you start developing your Google Assistant chatbot in the following section.
+
+287> -------Design conversational flows for your agent
+• Contact Center AI can increase customer satisfaction and operational efficiency by improving call deflection rates, and achieve shorter handling, while making overall operations faster and more effective.
+
+
+	• Follow-up intents
+	You can use follow-up intents to automatically set contexts for pairs of intents. A follow-up intent is a child of its associated parent intent. When you create a follow-up intent, an output context is automatically added to the parent intent and an input context of the same name is added to the follow-up intent. A follow-up intent is only matched when the parent intent is matched in the previous conversational turn. You can also create multiple levels of nested follow-up intents.
+	• Use slot filling technique via action and parameters interface to collect all the information from the user in the form of entity
 =======
