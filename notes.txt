@@ -1562,6 +1562,34 @@ Hyperledger is an open source collaborative effort created to advance cross-indu
 
 https://www.whatismyip.com/
 
+285> -------------------------------------------- learning TensorFlow: The hello world of ml
+	• TensorFlow is Google's open source library for machine learning. 
+	• A library called numpy, which helps represent the data as lists
+	• keras, the framework for defining a neural network as a set of sequential layers
 
+
+
+	X:	-1	0	1	2	3	4
+	Y:	-2	1	4	7	10	13
+	• As you look at them you might notice that the X value is increasing by 1 as you read left to right, and the corresponding Y value is increasing by 3. So you probably think Y=3X plus or minus something. Then you'd probably look at the zero on X and see that Y = 1, and you'd come up with the relationship Y=3X+1.
+	• You know that in the function, the relationship between the numbers is y=2x-1.
+	• When the computer tries to 'learn' that, it makes a guess...maybe y=10x+10. The loss function measures the guessed answers against the known correct answers and measures how well or how badly it did.
+	• Next, the model uses the optimizer function to make another guess. Based on the loss function's result, it will try to minimize the loss. At this point maybe it will come up with something like y=5x+5. While this is still pretty bad, it's closer to the correct result (i.e. the loss is lower).
+	• The model repeats this for the number of epochs you specify.
+	• To train the neural network to 'learn' the relationship between the Xs and Ys, you step it through a loop: make a guess, measure how good or bad it is (aka the loss), use the optimizer to make another guess, etc. It will do it for the number of epochs you specify, which in this lab is 500.
+
+Final code for the model training: 
+import warnings 
+warnings.simplefilter(action='ignore', category=FutureWarning) 
+import tensorflow as tf 
+import numpy as np 
+from tensorflow import keras 
+from tensorflow.python.util 
+import deprecation deprecation._PRINT_DEPRECATION_WARNINGS = False 
+model = tf.keras.Sequential([keras.layers.Dense(units=1, input_shape=[1])]) 
+model.compile(optimizer='sgd', loss='mean_squared_error') 
+xs = np.array([-1.0, 0.0, 1.0, 2.0, 3.0, 4.0], dtype=float) 
+ys = np.array([-2.0, 1.0, 4.0, 7.0, 10.0, 13.0], dtype=float) 
+model.fit(xs, ys, epochs=500)
 
 =======
